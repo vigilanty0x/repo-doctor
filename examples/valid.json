@@ -1,0 +1,10 @@
+{
+  "query": "SELECT * FROM items WHERE key = ?",
+  "before_plan": [
+    "SCAN items"
+  ],
+  "after_plan": [
+    "SEARCH items USING INDEX idx_key"
+  ]
+}
+
