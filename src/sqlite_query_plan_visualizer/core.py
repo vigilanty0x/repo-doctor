@@ -1,51 +1,126 @@
 from __future__ import annotations
-from datetime import datetime
+
 from hashlib import sha256
 import json
+import math
 import re
+import sqlite3
 from typing import Any
 
 PROJECT = "sqlite-query-plan-visualizer"
-REQUIRED_FIELDS = ["query","before_plan","after_plan"]
+REQUIRED_FIELDS = ("query", "fixture")
+MAX_INPUT_BYTES = 131_072
+IDENTIFIER = re.compile(r"[A-Za-z_][A-Za-z0-9_]{0,63}")
+ALLOWED_TYPES = {"INTEGER", "REAL", "TEXT", "BLOB", "NUMERIC"}
+
 
 def _canonical(value: Any) -> str:
-    return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+    return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False, allow_nan=False)
 
-def _text(value: Any) -> bool:
-    return isinstance(value, str) and bool(value.strip())
 
-def _string_list(value: Any) -> bool:
-    return isinstance(value, list) and bool(value) and all(_text(item) for item in value)
+def _identifier(value: Any) -> bool:
+    return isinstance(value, str) and bool(IDENTIFIER.fullmatch(value))
 
-def _integer(value: Any) -> bool:
-    return isinstance(value, int) and not isinstance(value, bool)
 
-def _number(value: Any) -> bool:
-    return isinstance(value, (int, float)) and not isinstance(value, bool)
+def _scalar(value: Any) -> bool:
+    return value is None or isinstance(value, (str, bytes, int, float)) and not isinstance(value, bool) and (not isinstance(value, float) or math.isfinite(value))
 
-def compare_plans(record: dict[str, Any]) -> dict[str, Any]:
-    if not _text(record["query"]) or not record["query"].lstrip().upper().startswith(("SELECT", "WITH")):
-        raise ValueError("only read-only query plans are accepted")
-    before, after = record["before_plan"], record["after_plan"]
-    if not _string_list(before) or not _string_list(after):
-        raise ValueError("query plans must contain non-empty lines")
-    return {"removed": [line for line in before if line not in after], "added": [line for line in after if line not in before], "uses_index": any("INDEX" in line.upper() for line in after)}
 
-def evaluate(record: dict[str, Any]) -> dict[str, Any]:
-    missing = [field for field in REQUIRED_FIELDS if field not in record]
-    artifact: Any = None
-    if missing:
-        status = "blocked"
-        reason = "missing required fields: " + ", ".join(missing)
-    else:
+def _quote(value: str) -> str:
+    return '"' + value.replace('"', '""') + '"'
+
+
+def _load_fixture(connection: sqlite3.Connection, fixture: Any) -> None:
+    if not isinstance(fixture, dict) or set(fixture) - {"tables", "indexes"}:
+        raise ValueError("fixture accepts only tables and indexes")
+    tables = fixture.get("tables")
+    indexes = fixture.get("indexes", [])
+    if not isinstance(tables, list) or not 1 <= len(tables) <= 25 or not isinstance(indexes, list) or len(indexes) > 50:
+        raise ValueError("fixture requires 1-25 tables and at most 50 indexes")
+    known: dict[str, list[str]] = {}
+    for table in tables:
+        if not isinstance(table, dict) or set(table) != {"name", "columns", "rows"} or not _identifier(table["name"]) or table["name"] in known:
+            raise ValueError("each table needs a unique safe name, columns, and rows")
+        columns = table["columns"]
+        rows = table["rows"]
+        if not isinstance(columns, list) or not 1 <= len(columns) <= 50 or not isinstance(rows, list) or len(rows) > 1000:
+            raise ValueError("table columns or rows exceed bounds")
+        names: list[str] = []
+        declarations: list[str] = []
+        for column in columns:
+            if not isinstance(column, dict) or set(column) != {"name", "type"} or not _identifier(column["name"]) or column["name"] in names or column["type"] not in ALLOWED_TYPES:
+                raise ValueError("columns require unique safe names and allowlisted SQLite types")
+            names.append(column["name"])
+            declarations.append(f"{_quote(column['name'])} {column['type']}")
+        known[table["name"]] = names
+        connection.execute(f"CREATE TABLE {_quote(table['name'])} ({', '.join(declarations)})")
+        placeholders = ",".join("?" for _ in names)
+        for row in rows:
+            if not isinstance(row, list) or len(row) != len(names) or any(not _scalar(value) for value in row):
+                raise ValueError("fixture rows must align with columns and contain SQLite scalar values")
+            connection.execute(f"INSERT INTO {_quote(table['name'])} VALUES ({placeholders})", row)
+    seen_indexes: set[str] = set()
+    for index in indexes:
+        if not isinstance(index, dict) or set(index) != {"name", "table", "columns"} or not _identifier(index["name"]) or index["name"] in seen_indexes or index["table"] not in known:
+            raise ValueError("indexes require unique safe names and declared tables")
+        columns = index["columns"]
+        if not isinstance(columns, list) or not 1 <= len(columns) <= 20 or len(columns) != len(set(columns)) or any(column not in known[index["table"]] for column in columns):
+            raise ValueError("index columns must be unique declared columns")
+        seen_indexes.add(index["name"])
+        connection.execute(f"CREATE INDEX {_quote(index['name'])} ON {_quote(index['table'])} ({', '.join(_quote(c) for c in columns)})")
+
+
+def generate_plan(record: dict[str, Any]) -> dict[str, Any]:
+    if set(record) - {"query", "fixture", "parameters"}:
+        raise ValueError("record accepts only query, fixture, and parameters; plans are generated by SQLite")
+    query = record.get("query")
+    parameters = record.get("parameters", [])
+    if not isinstance(query, str) or not 1 <= len(query.strip()) <= 10_000 or "\x00" in query:
+        raise ValueError("query must contain one bounded SQLite statement")
+    if not isinstance(parameters, list) or len(parameters) > 100 or any(not _scalar(value) for value in parameters):
+        raise ValueError("parameters must contain at most 100 SQLite scalar values")
+    connection = sqlite3.connect(":memory:")
+    try:
+        _load_fixture(connection, record.get("fixture"))
+        allowed = {sqlite3.SQLITE_SELECT, sqlite3.SQLITE_READ, sqlite3.SQLITE_FUNCTION}
+        recursive = getattr(sqlite3, "SQLITE_RECURSIVE", None)
+        if recursive is not None:
+            allowed.add(recursive)
+
+        def authorize(action: int, arg1: str | None, arg2: str | None, database: str | None, trigger: str | None) -> int:
+            del arg1, database, trigger
+            if action == sqlite3.SQLITE_FUNCTION and (arg2 or "").casefold() in {"load_extension", "readfile", "writefile"}:
+                return sqlite3.SQLITE_DENY
+            return sqlite3.SQLITE_OK if action in allowed else sqlite3.SQLITE_DENY
+
+        connection.set_authorizer(authorize)
         try:
-            artifact = compare_plans(record)
-            status = "passed"
-            reason = "compare_plans completed"
-        except (TypeError, ValueError, KeyError) as exc:
-            status = "failed"
-            reason = str(exc)
-    receipt = {"project": PROJECT, "status": status, "reason": reason, "record": record, "plan_diff": artifact}
+            rows = connection.execute("EXPLAIN QUERY PLAN " + query, parameters).fetchall()
+        except sqlite3.DatabaseError as exc:
+            raise ValueError("query must be one authorized read-only statement") from exc
+    finally:
+        connection.close()
+    plan = [{"id": row[0], "parent": row[1], "detail": row[3]} for row in rows]
+    return {"source": "sqlite-explain-query-plan", "plan": plan, "uses_index": any("INDEX" in row["detail"].upper() for row in plan)}
+
+
+def evaluate(record: Any) -> dict[str, Any]:
+    artifact: Any = None
+    safe_record = None
+    try:
+        if not isinstance(record, dict):
+            raise ValueError("record must be a JSON object")
+        if len(_canonical(record).encode()) > MAX_INPUT_BYTES:
+            raise ValueError("record exceeds 131072 bytes")
+        safe_record = record
+        missing = [field for field in REQUIRED_FIELDS if field not in record]
+        if missing:
+            status, reason = "blocked", "missing required fields: " + ", ".join(missing)
+        else:
+            artifact = generate_plan(record)
+            status, reason = "passed", "SQLite generated the plan in an isolated in-memory fixture"
+    except (TypeError, ValueError, KeyError, OverflowError) as exc:
+        status, reason = "failed", str(exc)
+    receipt = {"project": PROJECT, "status": status, "reason": reason, "record": safe_record, "query_plan": artifact, "plan_diff": artifact}
     receipt["evidence_sha256"] = sha256(_canonical(receipt).encode()).hexdigest()
     return receipt
-

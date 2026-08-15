@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "sqlite-query-plan-visualizer"
 version = "0.1.0"
-description = "Compare SQLite query plans before and after index changes."
+description = "Generate a real SQLite query plan in a validated isolated fixture."
 readme = "README.md"
 requires-python = ">=3.11"
 license = {text = "Apache-2.0"}
@@ -19,4 +19,3 @@ package-dir = {"" = "src"}
 
 [tool.setuptools.packages.find]
 where = ["src"]
-

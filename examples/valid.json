@@ -1,10 +1,12 @@
 {
-  "query": "SELECT * FROM items WHERE key = ?",
-  "before_plan": [
-    "SCAN items"
-  ],
-  "after_plan": [
-    "SEARCH items USING INDEX idx_key"
-  ]
+  "query": "SELECT value FROM items WHERE key = ?",
+  "parameters": ["a"],
+  "fixture": {
+    "tables": [{
+      "name": "items",
+      "columns": [{"name": "key", "type": "TEXT"}, {"name": "value", "type": "TEXT"}],
+      "rows": [["a", "one"], ["b", "two"]]
+    }],
+    "indexes": [{"name": "idx_items_key", "table": "items", "columns": ["key"]}]
+  }
 }
-
