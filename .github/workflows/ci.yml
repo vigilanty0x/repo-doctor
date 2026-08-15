@@ -26,5 +26,4 @@ jobs:
       - run: python -m ai_setup_doctor diagnose --fixture examples/fixture.json --output /tmp/report.json || test $? -eq 2
       - run: python -m ai_setup_doctor verify /tmp/report.json
       - run: python -m ai_setup_doctor probe functional
-      - run: python -m pip wheel . --no-deps --no-build-isolation --wheel-dir /tmp/wheel
-
+      - run: python -m pip wheel . --no-deps --wheel-dir /tmp/wheel
