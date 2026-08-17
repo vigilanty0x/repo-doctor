@@ -62,7 +62,7 @@ def _supports_descriptor_relative_reads() -> bool:
 
 
 class ConfinedReader:
-    """Read descendants through a pinned root descriptor and no-follow openat calls."""
+    """Read descendants with descriptor-relative or portable identity confinement."""
 
     def __init__(self, root: str | Path):
         self.root = Path(root)
@@ -321,15 +321,21 @@ def read_bounded_bytes(path: str | Path, maximum_bytes: int, *, label: str) -> b
     flags = os.O_RDONLY | getattr(os, "O_BINARY", 0) | getattr(os, "O_NOFOLLOW", 0)
     descriptor: int | None = None
     try:
+        expected = target.lstat()
+        if _metadata_is_link_or_reparse(expected) or not stat.S_ISREG(expected.st_mode):
+            raise BoundedReadError(f"{label} must be a regular non-link file")
         descriptor = os.open(target, flags)
         metadata = os.fstat(descriptor)
-        if not stat.S_ISREG(metadata.st_mode):
-            raise BoundedReadError(f"{label} must be a regular file")
+        if not stat.S_ISREG(metadata.st_mode) or not os.path.samestat(expected, metadata):
+            raise BoundedReadError(f"{label} changed while it was opened")
         if metadata.st_size > maximum_bytes:
             raise BoundedReadError(f"{label} exceeds {maximum_bytes} bytes")
         with os.fdopen(descriptor, "rb", closefd=True) as stream:
             descriptor = None
             content = stream.read(maximum_bytes + 1)
+        current = target.lstat()
+        if _metadata_is_link_or_reparse(current) or not os.path.samestat(expected, current):
+            raise BoundedReadError(f"{label} changed during the read")
         if len(content) > maximum_bytes:
             raise BoundedReadError(f"{label} exceeds {maximum_bytes} bytes")
         return content

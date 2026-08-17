@@ -100,7 +100,7 @@ class CliTests(unittest.TestCase):
                 main(["scan", directory, "--format", "sarif", "--fail-on", "none"])
             payload = json.loads(output.getvalue())
             self.assertEqual(payload["version"], "2.1.0")
-            self.assertEqual(payload["runs"][0]["tool"]["driver"]["name"], "Repo Doctor AI")
+            self.assertEqual(payload["runs"][0]["tool"]["driver"]["name"], "Repo Doctor")
 
     def test_rules_and_explain(self) -> None:
         output = io.StringIO()

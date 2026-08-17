@@ -1,14 +1,29 @@
 from __future__ import annotations
 
 from pathlib import Path
+import os
 import tempfile
 import unittest
 from unittest.mock import patch
 
-from repo_doctor_ai.io_utils import BoundedReadError, ConfinedReader
+from repo_doctor_ai.io_utils import BoundedReadError, ConfinedReader, read_bounded_bytes
 
 
 class ConfinedReaderPortableTests(unittest.TestCase):
+    def test_standalone_reader_rejects_a_file_link_without_os_no_follow(self) -> None:
+        with tempfile.TemporaryDirectory() as directory, tempfile.TemporaryDirectory() as outside:
+            root = Path(directory)
+            target = Path(outside) / "outside.txt"
+            target.write_bytes(b"outside")
+            link = root / "linked.txt"
+            try:
+                link.symlink_to(target)
+            except OSError:
+                self.skipTest("file symlink creation unavailable")
+            with patch.object(os, "O_NOFOLLOW", 0, create=True):
+                with self.assertRaises(BoundedReadError):
+                    read_bounded_bytes(link, 1024, label="fixture")
+
     def test_portable_backend_reads_a_regular_descendant(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

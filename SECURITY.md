@@ -6,11 +6,11 @@ Security fixes are provided for the latest tagged minor release.
 
 ## Scanner boundary
 
-Repo Doctor AI is a read-only static auditor, not a sandbox or malware scanner. Do not use it to make untrusted repositories safe to execute. The tool never runs repository code, imports inspected modules, evaluates configuration expressions, or sends source to a network service.
+Repo Doctor is a read-only static auditor, not a sandbox or malware scanner. Do not use it to make untrusted repositories safe to execute. The tool never runs repository code, imports inspected modules, evaluates configuration expressions, or sends source to a network service.
 
 Controls include:
 
-- a pinned root descriptor, component-by-component `openat` confinement, no directory-symlink traversal, and unconditional file-symlink skipping; platforms without descriptor-relative opens fail closed;
+- descriptor-relative `openat` confinement where supported and a portable root/component/opened-file identity backend elsewhere, with unconditional symlink, junction, and reparse-point skipping;
 - deterministic exclusions and file, content, timeout, error, finding, baseline, report, and journal bounds;
 - duplicate-key and unknown-field rejection for configuration, baselines, and consumed reports;
 - credential redaction and control-character neutralization at finding construction and final JSON/human-output boundaries, including plugins, journals, and SBOM components;

@@ -2,7 +2,7 @@
 
 ## Scope
 
-AI assistance helped draft the architecture, implementation, tests, documentation, and synthetic fixtures for Repo Doctor AI 0.1.0 and 0.2.0. The repository owner selected the scope, approved publication, and remains responsible for releases and maintenance.
+AI assistance helped draft the architecture, implementation, tests, documentation, and synthetic fixtures for Repo Doctor 0.1.0 through 0.3.0. The repository owner selected the scope, approved publication, and remains responsible for releases and maintenance.
 
 ## Human-controlled decisions
 
@@ -15,7 +15,8 @@ AI assistance helped draft the architecture, implementation, tests, documentatio
 ## Verification
 
 - Unit and adversarial tests cover state transitions, deterministic order, all resource limits, ancestor-symlink races, multi-ecosystem manifests, risky CI, global redaction, terminal/SARIF safety, plugin deadlines and identities, scoring, expiring baselines, exact regression diffs, plans, all report formats, SBOM rejection, journal tampering, idempotency, and CLI alias policy.
-- Both wheel and source distribution are compiled, rebuilt, installed into isolated environments, and exercised through the installed CLI.
+- Source, wheel, and source distribution are built and installed into separate isolated environments; the direct wheel and sdist-derived wheel are compared by unpacked content and exercised through the installed CLI.
+- The portable filesystem backend is forced in adversarial tests, and the CI matrix is configured to cover Linux and Windows on Python 3.11 and 3.12.
 - Repository-wide scans check credential-shaped values and prohibited private references before publication.
 - Pull-request and post-merge CI are required before tagging a release.
 
