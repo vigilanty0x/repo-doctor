@@ -73,6 +73,8 @@ def neutralize_controls(value: str) -> str:
         if number < 32 or 127 <= number <= 159:
             escapes = {9: "\\t", 10: "\\n", 13: "\\r"}
             pieces.append(escapes.get(number, f"\\x{number:02x}"))
+        elif 0xD800 <= number <= 0xDFFF:
+            pieces.append(f"\\u{number:04x}")
         else:
             pieces.append(character)
     return "".join(pieces)

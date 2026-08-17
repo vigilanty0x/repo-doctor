@@ -14,7 +14,7 @@ from urllib.parse import quote
 import uuid
 
 from .config import Config
-from .io_utils import BoundedReadError, ConfinedReader
+from .io_utils import BoundedReadError, ConfinedReader, is_link_or_reparse
 from .sanitization import safe_output_text
 
 
@@ -49,7 +49,7 @@ def build_sbom(root: str | Path, config: Config | None = None) -> dict[str, Any]
                 directory
                 for directory in directories
                 if not _excluded((relative_dir / directory).as_posix(), directory, policy)
-                and not (Path(current) / directory).is_symlink()
+                and not is_link_or_reparse(Path(current) / directory)
             )
             for name in sorted(names):
                 if time.monotonic() >= deadline:
@@ -63,7 +63,7 @@ def build_sbom(root: str | Path, config: Config | None = None) -> dict[str, Any]
                 if not _is_manifest(name):
                     continue
                 candidate = Path(current) / name
-                if candidate.is_symlink():
+                if is_link_or_reparse(candidate):
                     continue
                 try:
                     encoded, _ = reader.read_bounded_bytes(
