@@ -9,6 +9,7 @@
 - Let host applications inject an explicit trusted `RuleRegistry` and `Config` into the CLI entry point without enabling dynamic plugin discovery.
 - Define exact inclusive behavior for the per-file byte limit and retain the observed size for the first oversized byte.
 - Add an offline cross-platform release gate that builds source, wheel, and sdist, rebuilds the wheel from sdist, compares artifact contents, installs all three forms, and exercises the installed CLI and SBOM workflow.
+- Reuse pinned host build tooling inside release venvs so Python 3.11 cannot shadow it with an older `ensurepip`-bundled `setuptools`.
 - Expand CI to Linux and Windows across Python 3.11 and 3.12.
 - Migrate repository links and product branding to `repo-doctor` while retaining the collision-free `repo-doctor-ai` Python distribution and `repo_doctor_ai` import path.
 
