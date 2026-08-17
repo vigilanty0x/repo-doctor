@@ -6,38 +6,20 @@ Run from a clean checkout with Python 3.11 or newer:
 
 ```bash
 python scripts/check.py
-python -m pip wheel . --no-deps --no-build-isolation --wheel-dir /tmp/repo-doctor-wheels
-mkdir -p /tmp/repo-doctor-sdists
-python -c "from setuptools.build_meta import build_sdist; build_sdist('/tmp/repo-doctor-sdists')"
+python scripts/release_gate.py
 ```
 
-Install the produced wheel in a fresh virtual environment and verify public commands:
-
-```bash
-python -m venv /tmp/repo-doctor-venv
-/tmp/repo-doctor-venv/bin/python -m pip install /tmp/repo-doctor-wheels/repo_doctor_ai-*.whl
-/tmp/repo-doctor-venv/bin/repo-doctor --version
-/tmp/repo-doctor-venv/bin/repo-doctor scan examples/sample-repo --fail-on none
-/tmp/repo-doctor-venv/bin/repo-doctor sbom examples/sample-repo --output /tmp/example.cdx.json
-```
-
-Build the sdist back into a wheel and smoke-test it independently:
-
-```bash
-python -m pip wheel /tmp/repo-doctor-sdists/repo_doctor_ai-*.tar.gz \
-  --no-deps --no-build-isolation --wheel-dir /tmp/repo-doctor-sdist-wheels
-python -m venv /tmp/repo-doctor-sdist-venv
-/tmp/repo-doctor-sdist-venv/bin/python -m pip install /tmp/repo-doctor-sdist-wheels/repo_doctor_ai-*.whl
-/tmp/repo-doctor-sdist-venv/bin/repo-doctor --version
-/tmp/repo-doctor-sdist-venv/bin/repo-doctor scan examples/sample-repo --config examples/repo-doctor.json --fail-on high
-/tmp/repo-doctor-sdist-venv/bin/repo-doctor sbom examples/sample-repo --config examples/repo-doctor.json --output /tmp/repo-doctor-sdist-smoke.cdx.json
-```
+The release gate is platform-neutral and forces pip offline. It builds a direct
+wheel and sdist, rebuilds a wheel from the sdist, compares their unpacked
+contents, installs source/wheel/sdist into separate temporary environments, and
+exercises version, plugin catalog, scan, SBOM, and `pip check` from outside the
+checkout.
 
 ## Release checklist
 
 1. Confirm `pyproject.toml` and `src/repo_doctor_ai/__init__.py` declare the same version.
 2. Add dated user-visible notes to `CHANGELOG.md`.
-3. Run the full matrix locally where available and in GitHub Actions for Python 3.11 and 3.12.
+3. Run the full matrix locally where available and in GitHub Actions on Linux and Windows for Python 3.11 and 3.12.
 4. Build both wheel and sdist, rebuild a wheel from the sdist, and install both artifacts into clean environments.
 5. Run self-audit, synthetic example, all report renderers, baseline/diff/plan workflow, journal replay, and SBOM generation.
 6. Review the package contents and SHA-256 digest.

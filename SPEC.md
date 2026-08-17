@@ -60,7 +60,7 @@ A finding is suppressed only when fingerprint and code match and expiry is absen
 - Unfinished-work findings per file: 50.
 - Remediation locations retained per work item: 25.
 
-Directories are walked in sorted order and the deadline is checked before every directory and file. Content is opened relative to a pinned root descriptor, one no-follow component at a time. Configured paths, directory symlinks, and file symlinks are not followed; a component swap fails as an unreadable blockage instead of escaping the root. Platforms without descriptor-relative opens fail closed. Binary files are counted but not decoded. Oversized files produce an inference and are not inspected.
+Directories are walked in sorted order and the deadline is checked before every directory and file. Where supported, content is opened relative to a pinned root descriptor, one no-follow component at a time. The portable backend pins root identity, rejects symlinks/junctions/reparse points, compares opened-file identity, verifies final containment, and repeats component checks after the bounded read. Configured paths and link-like entries are not followed; a detected component swap fails as an unreadable blockage instead of escaping the root. Binary files are counted but not decoded. Non-UTF-8 text content uses replacement decoding, while undecodable filename surrogates are rendered as explicit Unicode escapes. Oversized files produce an inference and are not inspected.
 
 ## Secret evidence policy
 
@@ -68,7 +68,7 @@ Credential-shaped match content is prohibited in all report, journal, and SBOM s
 
 ## Rule registry
 
-Plugins are explicitly registered trusted Python callables. The scanner never imports a plugin from the target repository. Plugins execute in sorted stable-name order. The registry validates finding type, category, severity, classification, safe output text, and fingerprint uniqueness. Exact duplicates collapse; conflicting duplicates are invocation failures. Deadline checks wrap plugins, file iteration, and yielded findings; POSIX main-thread scans additionally use a process timer to interrupt a blocking rule.
+Plugins are explicitly registered trusted Python callables. The scanner never imports a plugin from the target repository. Plugins execute in sorted stable-name order. The registry validates finding type, category, severity, classification, platform-independent relative paths, safe output text, and fingerprint uniqueness. Exact duplicates collapse; conflicting duplicates are invocation failures. Ordinary plugin exceptions become bounded `RegistryError` values without their potentially sensitive message; `BaseException` and timeout signals retain their control-flow semantics. Host applications may inject a trusted registry and configuration into `cli.main`; no command-line module discovery exists. Deadline checks wrap plugins, file iteration, and yielded findings; POSIX main-thread scans additionally use a process timer to interrupt a blocking rule.
 
 ## Diff contract
 
