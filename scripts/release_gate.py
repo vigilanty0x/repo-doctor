@@ -69,7 +69,11 @@ def _wheel_payload(path: Path) -> dict[str, bytes]:
 
 def _smoke_install(label: str, target: Path, workspace: Path) -> None:
     environment = workspace / f"venv-{label}"
-    venv.EnvBuilder(with_pip=True, system_site_packages=True).create(environment)
+    # Python 3.11's ensurepip can seed an older setuptools into the venv. That
+    # local copy shadows the pinned build tooling exposed through system site
+    # packages and can reject modern PEP 639 metadata. Reuse the host's pinned
+    # pip/setuptools instead of seeding version-dependent bundled copies.
+    venv.EnvBuilder(with_pip=False, system_site_packages=True).create(environment)
     python = _venv_python(environment)
     cli = _venv_cli(environment)
     install = [
