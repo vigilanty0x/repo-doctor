@@ -19,4 +19,11 @@ The registry validates result type, category, severity, and classification. Plug
 
 Applications explicitly construct and pass a registry to `Scanner`. The CLI intentionally has no dynamic plugin-discovery flag because importing modules named by an untrusted repository would violate the scanner boundary.
 
+An application embedding the command surface may call
+`cli.main(argv, registry=trusted_registry, config=trusted_config)`. Supplying
+both an injected config and `--config` is rejected as ambiguous. Ordinary
+plugin exceptions are surfaced as a `RegistryError` containing only the plugin
+name and exception type; exception text is never echoed because it may contain
+sensitive application data.
+
 Test a plugin through `Scanner.scan`, including absent/present fixtures, invalid input, final evidence redaction, deterministic ordering, duplicate identity, deadline, and finding-limit behavior. Treat diagnostic code and fingerprint inputs as public compatibility surfaces.

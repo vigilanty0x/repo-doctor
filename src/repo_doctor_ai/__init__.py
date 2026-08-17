@@ -1,4 +1,4 @@
-"""Repo Doctor AI public API."""
+"""Repo Doctor public API (distributed as ``repo-doctor-ai``)."""
 
 from .config import Config, ConfigError, load_config
 from .baseline import Baseline, BaselineEntry, BaselineError, load_baseline
@@ -22,4 +22,4 @@ __all__ = [
     "load_baseline",
     "load_config",
 ]
-__version__ = "0.2.0"
+__version__ = "0.3.0"
