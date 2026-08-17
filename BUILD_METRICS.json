@@ -1,10 +1,10 @@
 {
-  "release": "0.2.0",
-  "measured_at": "2026-08-16",
+  "release": "0.3.0",
+  "measured_at": "2026-08-17",
   "runtime_dependencies": 0,
   "unit_tests": {
-    "count": 104,
-    "passed": 104,
+    "count": 115,
+    "passed": 115,
     "failed": 0,
     "command": "PYTHONDONTWRITEBYTECODE=1 python scripts/check.py"
   },
@@ -25,19 +25,24 @@
     "strict_consumed_report_validation": "passed",
     "global_output_redaction_and_terminal_safety": "passed",
     "scanner_and_sbom_ancestor_race_confinement": "passed",
-    "plugin_deadline_and_identity_validation": "passed",
+    "portable_component_identity_backend": "passed with forced local backend",
+    "linux_ci": "passed on GitHub Actions run 32064138101 with Python 3.11 and 3.12",
+    "windows_ci": "passed on GitHub Actions run 32064138101 with Python 3.11 and 3.12",
+    "windows_drive_and_surrogate_path_validation": "passed",
+    "plugin_deadline_identity_and_failure_validation": "passed",
     "cyclonedx_sbom": "passed",
     "offline_wheel_build": "passed",
     "offline_sdist_build_and_wheel_rebuild": "passed",
     "wheel_sdist_content_parity": "passed",
-    "isolated_wheel_tests": "104 / 104 passed",
-    "isolated_sdist_tests": "104 / 104 passed",
-    "isolated_installed_workflows": "passed",
-    "installed_cli_version": "repo-doctor 0.2.0"
+    "isolated_source_install": "passed",
+    "isolated_wheel_install": "passed",
+    "isolated_sdist_install": "passed",
+    "isolated_installed_workflows": "version, plugin catalog, scan, SBOM, pip check passed",
+    "installed_cli_version": "repo-doctor 0.3.0"
   },
   "wheel": {
-    "filename": "repo_doctor_ai-0.2.0-py3-none-any.whl",
-    "sha256": "59236abd12cf0f8e97e86934b3f801c20a463efaf5bcd4dbf31467fbda76452e"
+    "filename": "repo_doctor_ai-0.3.0-py3-none-any.whl",
+    "digest_policy": "SHA-256 is recorded beside the final release artifact rather than embedded in its own source metadata"
   },
   "default_limits": {
     "max_files": 10000,

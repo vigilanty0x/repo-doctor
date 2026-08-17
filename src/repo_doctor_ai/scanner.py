@@ -12,7 +12,7 @@ from typing import Callable, Iterator
 
 from .baseline import Baseline
 from .config import Config
-from .io_utils import BoundedReadError, ConfinedReader
+from .io_utils import BoundedReadError, ConfinedReader, is_link_or_reparse
 from .models import Finding, Report, SEVERITY_ORDER
 from .registry import RegistryDeadlineExceeded, RuleRegistry
 from .rules import SourceFile, build_default_registry
@@ -88,7 +88,7 @@ class Scanner:
                     directory
                     for directory in directories
                     if not self._excluded((relative_dir / directory).as_posix(), directory)
-                    and not (Path(current) / directory).is_symlink()
+                    and not is_link_or_reparse(Path(current) / directory)
                 )
                 for name in sorted(names):
                     if stop_reason:
@@ -108,7 +108,7 @@ class Scanner:
                     metrics["files_seen"] += 1
                     candidate = Path(current) / name
                     try:
-                        if candidate.is_symlink():
+                        if is_link_or_reparse(candidate):
                             metrics["symlink_files"] += 1
                             operational.append(
                                 Finding(

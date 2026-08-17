@@ -28,7 +28,7 @@ repository + strict config + optional baseline
 | Module | Responsibility | Trust boundary |
 |---|---|---|
 | `config.py` | strict JSON configuration and bounds | rejects duplicate keys, unknown fields, unsafe excludes |
-| `scanner.py` | sorted inventory, content classification, root containment, state machine | pinned root descriptor; every component opened no-follow |
+| `scanner.py` | sorted inventory, content classification, root containment, state machine | descriptor-relative reads where available; portable component identity checks elsewhere |
 | `registry.py` | explicit plugin registration, ordering, finding-contract validation | plugin code is trusted caller code, never target-repository code |
 | `rules.py` | built-in deterministic audits | parses text/JSON/TOML only; no execution |
 | `baseline.py` | reasoned/expiring fingerprint suppressions | exact fingerprint and code match required |
@@ -43,10 +43,10 @@ repository + strict config + optional baseline
 
 1. Resolve and validate the root.
 2. Walk directories in sorted order with `followlinks=False`.
-3. Pin the resolved root directory descriptor and fail closed if descriptor-relative opens are unavailable.
-4. Prune configured paths and all directory symlinks.
+3. Pin the resolved root directory descriptor where descriptor-relative opens exist; otherwise pin the root identity and use the portable checked backend.
+4. Prune configured paths and all directory symlinks, junctions, and reparse points.
 5. Skip all file symlinks and retain an inference finding.
-6. Reopen each file component-by-component relative to the pinned root with no-follow flags.
+6. Reopen each file component-by-component relative to the pinned root with no-follow flags, or verify every component plus opened-file identity before and after a portable read.
 7. Enforce file-count, content-size, per-directory/rule deadline, error, and finding limits.
 8. Treat NUL-bearing content as binary; decode other content as UTF-8 with replacement.
 9. Run enabled trusted plugins in stable name order.

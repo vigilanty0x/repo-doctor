@@ -1,9 +1,10 @@
 {
   "format_version": "1.0",
   "project": {
-    "name": "Repo Doctor AI",
-    "repository": "https://github.com/vigilanty0x/repo-doctor-ai",
-    "release": "0.2.0"
+    "name": "Repo Doctor",
+    "repository": "https://github.com/vigilanty0x/repo-doctor",
+    "release": "0.3.0",
+    "python_distribution": "repo-doctor-ai"
   },
   "assistance": {
     "provider": "OpenAI",
@@ -12,7 +13,7 @@
     "activities": ["architecture drafting", "implementation", "test design", "documentation", "security hardening", "packaging verification"]
   },
   "human_role": ["scope selection", "architecture approval", "publication authorization", "release ownership"],
-  "verification": ["104 unit and adversarial tests in source and installed artifacts", "offline wheel and sdist builds", "isolated wheel and sdist installation", "wheel/sdist content parity", "self-audit", "all report formats", "baseline and regression workflow", "concurrent journal append", "SBOM generation", "CI"],
+  "verification": ["115 source unit and adversarial tests", "forced portable-backend confinement tests", "offline source, wheel, and sdist builds", "isolated source, wheel, and sdist installation", "wheel/sdist content parity", "self-audit", "all report formats", "baseline and regression workflow", "concurrent journal append", "SBOM generation", "Linux and Windows CI matrix configured"],
   "limitations": ["static rules can miss issues", "manifest-only dependency inventory", "no dependency vulnerability resolution", "no code execution or sandbox", "no remote model analysis"],
   "data": {"fixtures": "synthetic", "private_inputs_in_repository": false, "source_sent_to_model_at_runtime": false}
 }

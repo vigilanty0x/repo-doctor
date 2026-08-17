@@ -26,6 +26,11 @@ class ConfigTests(unittest.TestCase):
         with self.assertRaisesRegex(ConfigError, "safe relative"):
             Config.from_dict({"exclude": ["../outside"]})
 
+    def test_windows_drive_excludes_are_rejected_on_every_platform(self) -> None:
+        for path in (r"C:\outside", r"C:relative"):
+            with self.subTest(path=path), self.assertRaisesRegex(ConfigError, "safe relative"):
+                Config(exclude=(path,))
+
     def test_timeout_outside_bounds_is_rejected(self) -> None:
         with self.assertRaisesRegex(ConfigError, "timeout_seconds"):
             Config.from_dict({"timeout_seconds": 0})

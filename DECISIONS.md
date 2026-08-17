@@ -32,9 +32,9 @@ Baselines require a reason and optional expiry, match exact fingerprint plus cod
 
 The core emits a deterministic CycloneDX-compatible inventory without package-manager execution or registry access. This is useful as local evidence but intentionally does not claim a fully resolved graph, vulnerability status, or legal conclusion.
 
-## D-009 — Conservative symlink policy
+## D-009 — Conservative link policy with two confinement backends
 
-All file and directory symlinks are skipped, even when they currently resolve inside the root. A root directory descriptor is pinned and each content path is opened one no-follow component at a time, closing ancestor-swap races between containment checks and reads. Platforms without descriptor-relative opens fail closed.
+All file and directory symlinks, junctions, and reparse points are skipped, even when they currently resolve inside the root. POSIX-like platforms pin a root directory descriptor and open each content path one no-follow component at a time. Platforms without descriptor-relative opens pin root identity, reject link-like components, compare the opened file with the inventoried file, verify final containment, and repeat component checks after reading. Any detected swap fails closed.
 
 ## D-010 — Exact artifact semantics
 

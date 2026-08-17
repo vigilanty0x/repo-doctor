@@ -16,7 +16,7 @@ from .config import Config, ConfigError, load_config
 from .diffing import ReportDataError, diff_reports, load_report, render_diff_markdown
 from .journal import AuditJournal, JournalError
 from .planning import build_plan, render_plan_markdown
-from .registry import RegistryError
+from .registry import RegistryError, RuleRegistry
 from .reporting import serialize
 from .rules import RULE_HELP, build_default_registry
 from .sanitization import safe_output_text
@@ -138,8 +138,24 @@ def _reject_output_journal_alias(output: str | None, journal: str | None) -> Non
         raise ConfigError("--output must not alias --journal or its lock file")
 
 
-def main(argv: Sequence[str] | None = None) -> int:
+def main(
+    argv: Sequence[str] | None = None,
+    *,
+    registry: RuleRegistry | None = None,
+    config: Config | None = None,
+) -> int:
+    """Run the CLI, optionally with trusted host-provided policy objects.
+
+    ``registry`` and ``config`` are an embedding seam for applications that
+    already hold trusted Python objects. The command line never imports a
+    module named by the repository being audited.
+    """
+
     try:
+        if registry is not None and not isinstance(registry, RuleRegistry):
+            raise ConfigError("registry must be a RuleRegistry instance")
+        if config is not None and not isinstance(config, Config):
+            raise ConfigError("config must be a Config instance")
         args = _parser().parse_args(argv)
         if args.command == "init":
             path = Path(args.path)
@@ -150,14 +166,14 @@ def main(argv: Sequence[str] | None = None) -> int:
             return 0
 
         if args.command == "rules":
-            registry = build_default_registry()
+            active_registry = registry or build_default_registry()
             if args.format == "json":
-                print(_json({"diagnostics": RULE_HELP, "plugins": registry.as_dict()}), end="")
+                print(_json({"diagnostics": RULE_HELP, "plugins": active_registry.as_dict()}), end="")
             else:
                 for code in sorted(RULE_HELP):
                     print(f"{code}\t{RULE_HELP[code]}")
                 print("\nPlugins:")
-                for plugin in registry.plugins:
+                for plugin in active_registry.plugins:
                     print(f"{plugin.name}\t{plugin.category}\t{plugin.description}")
             return 0
 
@@ -204,16 +220,20 @@ def main(argv: Sequence[str] | None = None) -> int:
             return 0
 
         if args.command == "sbom":
-            result = build_sbom(args.path, load_config(args.config))
+            if config is not None and args.config:
+                raise ConfigError("cannot combine an injected config with --config")
+            result = build_sbom(args.path, config or load_config(args.config))
             _emit(_json(result), args.output)
             return 0
 
-        config = load_config(args.config)
+        if config is not None and args.config:
+            raise ConfigError("cannot combine an injected config with --config")
+        active_config = config or load_config(args.config)
         if bool(args.journal) != bool(args.run_id):
             raise ConfigError("--journal and --run-id must be provided together")
         _reject_output_journal_alias(args.output, args.journal)
         baseline = load_baseline(args.baseline) if args.baseline else None
-        report = Scanner(config).scan(args.path, baseline=baseline)
+        report = Scanner(active_config, registry=registry).scan(args.path, baseline=baseline)
         if args.journal:
             AuditJournal(args.journal).append(args.run_id, report.as_dict())
         _emit(serialize(report, args.format), args.output)
