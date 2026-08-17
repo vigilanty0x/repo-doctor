@@ -8,12 +8,12 @@ being inspected.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from pathlib import PurePosixPath
 import re
 import time
 from typing import Callable, Iterable, Iterator
 
 from .models import Finding, SEVERITY_ORDER
+from .io_utils import is_safe_relative_path
 from .sanitization import is_safe_output_text, safe_output_text
 
 
@@ -62,9 +62,9 @@ class RulePlugin:
     audit: RuleFunction
 
     def __post_init__(self) -> None:
-        if not _SAFE_NAME.fullmatch(self.name):
+        if not isinstance(self.name, str) or not _SAFE_NAME.fullmatch(self.name):
             raise RegistryError("plugin name must be a safe 2-64 character identifier")
-        if not _SAFE_NAME.fullmatch(self.category):
+        if not isinstance(self.category, str) or not _SAFE_NAME.fullmatch(self.category):
             raise RegistryError("plugin category must be a safe 2-64 character identifier")
         if not isinstance(self.description, str):
             raise RegistryError("plugin description must contain 1-300 characters")
@@ -85,6 +85,8 @@ class RuleRegistry:
             self.register(plugin)
 
     def register(self, plugin: RulePlugin) -> "RuleRegistry":
+        if not isinstance(plugin, RulePlugin):
+            raise RegistryError("registry entries must be RulePlugin instances")
         if plugin.name in self._plugins:
             raise RegistryError(f"duplicate plugin name: {plugin.name}")
         self._plugins[plugin.name] = plugin
@@ -140,6 +142,12 @@ class RuleRegistry:
                 if exc.findings:
                     raise
                 raise RegistryDeadlineExceeded(findings, tuple(executed)) from None
+            except RegistryError:
+                raise
+            except Exception as exc:
+                raise RegistryError(
+                    f"plugin {plugin.name} failed with {type(exc).__name__}"
+                ) from None
         return findings, tuple(executed), False
 
     @staticmethod
@@ -183,9 +191,7 @@ class RuleRegistry:
                 or not is_safe_output_text(finding.path)
             ):
                 raise RegistryError(f"plugin {plugin.name} returned an invalid path")
-            normalized = finding.path.replace("\\", "/")
-            path = PurePosixPath(normalized)
-            if path.is_absolute() or ".." in path.parts:
+            if not is_safe_relative_path(finding.path):
                 raise RegistryError(f"plugin {plugin.name} returned an escaping path")
         if finding.line is not None and (
             isinstance(finding.line, bool)

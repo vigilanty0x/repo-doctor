@@ -17,6 +17,23 @@ def plugin_finding(category: str = "custom") -> Finding:
 
 
 class RegistryTests(unittest.TestCase):
+    def test_registry_rejects_non_plugin_values_with_a_stable_error(self) -> None:
+        with self.assertRaisesRegex(RegistryError, "RulePlugin"):
+            RuleRegistry([object()])  # type: ignore[list-item]
+
+    def test_plugin_execution_errors_are_wrapped_without_echoing_details(self) -> None:
+        token = "gh" + "p_" + "A" * 36
+
+        def failing_plugin(_files):
+            raise RuntimeError(f"synthetic failure containing {token}")
+
+        registry = RuleRegistry(
+            [RulePlugin("custom.failure", "custom", "Synthetic failing plugin", failing_plugin)]
+        )
+        with self.assertRaisesRegex(RegistryError, "custom.failure.*RuntimeError") as captured:
+            registry.run((), ("custom",), max_findings=10)
+        self.assertNotIn(token, str(captured.exception))
+
     def test_custom_plugin_runs_through_scanner(self) -> None:
         registry = RuleRegistry(
             [RulePlugin("custom.signal", "custom", "Synthetic trusted plugin", lambda files: [plugin_finding()])]
@@ -48,6 +65,59 @@ class RegistryTests(unittest.TestCase):
         )
         with self.assertRaisesRegex(RegistryError, "expected"):
             registry.run((), ("custom",), max_findings=10)
+
+    def test_plugin_paths_reject_windows_drive_forms_on_every_platform(self) -> None:
+        for path in (r"C:\outside.txt", r"C:relative.txt"):
+            with self.subTest(path=path):
+                registry = RuleRegistry(
+                    [
+                        RulePlugin(
+                            "custom.path",
+                            "custom",
+                            "Synthetic path plugin",
+                            lambda _files, value=path: [
+                                Finding(
+                                    "CUSTOM_PATH",
+                                    "custom",
+                                    "medium",
+                                    "proof",
+                                    "Signal",
+                                    "Fix signal",
+                                    path=value,
+                                    evidence="fact",
+                                )
+                            ],
+                        )
+                    ]
+                )
+                with self.assertRaisesRegex(RegistryError, "escaping path"):
+                    registry.run((), ("custom",), max_findings=10)
+
+    def test_plugin_path_with_surrogate_is_rendered_as_safe_text(self) -> None:
+        registry = RuleRegistry(
+            [
+                RulePlugin(
+                    "custom.encoding",
+                    "custom",
+                    "Synthetic encoding plugin",
+                    lambda _files: [
+                        Finding(
+                            "CUSTOM_ENCODING",
+                            "custom",
+                            "low",
+                            "proof",
+                            "Signal",
+                            "Fix signal",
+                            path="bad_\udcff.txt",
+                            evidence="fact",
+                        )
+                    ],
+                )
+            ]
+        )
+        findings, _, _ = registry.run((), ("custom",), max_findings=10)
+        self.assertEqual(findings[0].path, r"bad_\udcff.txt")
+        findings[0].path.encode("utf-8")
 
     def test_finding_limit_blocks_instead_of_claiming_completion(self) -> None:
         registry = RuleRegistry(

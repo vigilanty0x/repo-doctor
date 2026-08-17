@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 from pathlib import Path
+import os
+import json
 import tempfile
 import unittest
 from unittest.mock import patch
@@ -8,6 +10,7 @@ from unittest.mock import patch
 from repo_doctor_ai.config import Config
 from repo_doctor_ai.io_utils import BoundedReadError, ConfinedReader
 from repo_doctor_ai.scanner import Scanner
+from repo_doctor_ai.reporting import serialize
 
 from tests.helpers import healthy_repo
 
@@ -55,6 +58,35 @@ class ScannerTests(unittest.TestCase):
             report = Scanner(Config(max_file_bytes=1024)).scan(root)
             finding = next(f for f in report.findings if f.code == "SCAN_FILE_SKIPPED_LARGE")
             self.assertEqual(finding.classification, "inference")
+
+    def test_file_size_limit_is_inclusive_and_reports_the_first_oversized_byte(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            healthy_repo(root)
+            (root / "exact.bin").write_bytes(b"x" * 1024)
+            (root / "oversized.bin").write_bytes(b"x" * 1025)
+            report = Scanner(Config(max_file_bytes=1024)).scan(root)
+        large = [finding for finding in report.findings if finding.code == "SCAN_FILE_SKIPPED_LARGE"]
+        self.assertEqual([finding.path for finding in large], ["oversized.bin"])
+        self.assertEqual(large[0].evidence, "1025 bytes")
+
+    @unittest.skipIf(os.name == "nt", "byte filenames are a POSIX filesystem behavior")
+    def test_non_utf8_filename_is_safe_in_json_output(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            healthy_repo(root)
+            encoded_path = os.path.join(os.fsencode(root), b"bad_\xff.py")
+            descriptor = os.open(encoded_path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+            with os.fdopen(descriptor, "wb") as handle:
+                handle.write(b"# TODO\n")
+            payload = serialize(Scanner().scan(root), "json")
+        payload.encode("utf-8")
+        paths = [
+            finding["location"]["path"]
+            for finding in json.loads(payload)["findings"]
+            if finding["location"] is not None
+        ]
+        self.assertIn(r"bad_\udcff.py", paths)
 
     def test_binary_file_is_counted_without_decoding(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

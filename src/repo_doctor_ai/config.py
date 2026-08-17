@@ -8,7 +8,7 @@ from pathlib import Path
 import re
 from typing import Any
 
-from .io_utils import BoundedReadError, read_bounded_text
+from .io_utils import BoundedReadError, is_safe_relative_path, read_bounded_text
 
 CATEGORIES = (
     "structure",
@@ -92,7 +92,7 @@ class Config:
         ):
             raise ConfigError("exclude must contain at most 256 non-empty strings")
         for item in excludes:
-            if item.startswith(("/", "\\")) or ".." in Path(item.replace("\\", "/")).parts:
+            if not is_safe_relative_path(item):
                 raise ConfigError("exclude entries must be safe relative names or paths")
         if len(set(excludes)) != len(excludes):
             raise ConfigError("exclude contains duplicates")
@@ -144,7 +144,7 @@ class Config:
         ):
             raise ConfigError("exclude must be an array of at most 256 non-empty strings")
         for item in excludes:
-            if item.startswith(("/", "\\")) or ".." in Path(item.replace("\\", "/")).parts:
+            if not is_safe_relative_path(item):
                 raise ConfigError("exclude entries must be safe relative names or paths")
 
         categories = raw.get("enabled_categories", list(CATEGORIES))
