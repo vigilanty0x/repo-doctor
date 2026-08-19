@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "tools": [
+    {
+      "name": "Git",
+      "command": "git",
+      "version_args": ["--version"],
+      "timeout_seconds": 0.2,
+      "present": true,
+      "behavior": {"kind": "success", "stdout": "git version 2.45.0"}
+    },
+    {
+      "name": "Docker",
+      "command": "docker",
+      "version_args": ["--version"],
+      "timeout_seconds": 0.2,
+      "present": false,
+      "behavior": {"kind": "success", "stdout": "unused"}
+    },
+    {
+      "name": "Ollama counter-proof",
+      "command": "ollama",
+      "version_args": ["--version"],
+      "timeout_seconds": 0.2,
+      "present": true,
+      "behavior": {"kind": "timeout"}
+    }
+  ]
+}
+
