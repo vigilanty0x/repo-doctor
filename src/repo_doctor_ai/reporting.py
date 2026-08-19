@@ -68,9 +68,9 @@ def render_sarif(report: Report) -> dict[str, Any]:
             {
                 "tool": {
                     "driver": {
-                        "name": "Repo Doctor AI",
+                        "name": "Repo Doctor",
                         "semanticVersion": __version__,
-                        "informationUri": "https://github.com/vigilanty0x/repo-doctor-ai",
+                        "informationUri": "https://github.com/vigilanty0x/repo-doctor",
                         "rules": [rules[code] for code in sorted(rules)],
                     }
                 },

@@ -8,11 +8,48 @@ import tempfile
 import unittest
 
 from repo_doctor_ai.cli import main
+from repo_doctor_ai.config import Config
+from repo_doctor_ai.models import Finding
+from repo_doctor_ai.registry import RulePlugin, RuleRegistry
 
 from tests.helpers import healthy_repo
 
 
 class CliTests(unittest.TestCase):
+    def test_host_application_can_inject_a_trusted_plugin_registry(self) -> None:
+        registry = RuleRegistry(
+            [
+                RulePlugin(
+                    "custom.signal",
+                    "custom",
+                    "Synthetic trusted plugin",
+                    lambda _files: [
+                        Finding(
+                            "CUSTOM_SIGNAL",
+                            "custom",
+                            "medium",
+                            "proof",
+                            "Synthetic signal",
+                            "Resolve the synthetic signal.",
+                            evidence="synthetic fact",
+                        )
+                    ],
+                )
+            ]
+        )
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "README.md").write_text("# demo\n", encoding="utf-8")
+            output = io.StringIO()
+            with redirect_stdout(output):
+                code = main(
+                    ["scan", str(root), "--format", "json", "--fail-on", "none"],
+                    registry=registry,
+                    config=Config(enabled_categories=("custom",)),
+                )
+        self.assertEqual(code, 0)
+        self.assertEqual(json.loads(output.getvalue())["findings"][0]["code"], "CUSTOM_SIGNAL")
+
     def test_invalid_invocation_uses_documented_exit_three(self) -> None:
         with redirect_stderr(io.StringIO()):
             self.assertEqual(main(["scan", "--fail-on", "impossible"]), 3)
@@ -63,7 +100,7 @@ class CliTests(unittest.TestCase):
                 main(["scan", directory, "--format", "sarif", "--fail-on", "none"])
             payload = json.loads(output.getvalue())
             self.assertEqual(payload["version"], "2.1.0")
-            self.assertEqual(payload["runs"][0]["tool"]["driver"]["name"], "Repo Doctor AI")
+            self.assertEqual(payload["runs"][0]["tool"]["driver"]["name"], "Repo Doctor")
 
     def test_rules_and_explain(self) -> None:
         output = io.StringIO()
