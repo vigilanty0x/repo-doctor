@@ -1,0 +1,75 @@
+{
+  "schema_version": "repo-doctor/consumer-inventory-v1",
+  "target": "vigilanty0x/repo-doctor",
+  "legacy_source": "vigilanty0x/repo-doctor-ai",
+  "observed_candidate_parent": "b9844cd00b93f0f28587fb203c00a7bb5817d05d",
+  "legacy_identifiers": [
+    "repo_doctor_ai",
+    "repo-doctor-ai",
+    "github.com/vigilanty0x/repo-doctor-ai"
+  ],
+  "family_repositories": [
+    "ai-setup-doctor",
+    "backup-verifier",
+    "config-drift-detector",
+    "container-resource-profiler",
+    "dependency-drift-reporter",
+    "docker-stack-doctor",
+    "duplicate-finder",
+    "healthcheck-hub",
+    "migration-verifier",
+    "port-conflict-doctor",
+    "repo-dependency-graph",
+    "service-doctor",
+    "sqlite-health-doctor",
+    "sqlite-query-plan-visualizer"
+  ],
+  "observations": [
+    {
+      "method": "connected_default_branch_code_search",
+      "query": "repo_doctor_ai",
+      "scope": "14 public Repo Doctor satellite repositories",
+      "hits": 0
+    },
+    {
+      "method": "connected_default_branch_code_search",
+      "query": "repo-doctor-ai",
+      "scope": "14 public Repo Doctor satellite repositories",
+      "hits": 0
+    },
+    {
+      "method": "connected_default_branch_code_search",
+      "query": "github.com/vigilanty0x/repo-doctor-ai",
+      "scope": "14 public Repo Doctor satellite repositories",
+      "hits": 0
+    },
+    {
+      "method": "repository_metadata",
+      "repository": "vigilanty0x/repo-doctor-ai",
+      "public_forks": 0,
+      "network_count": 0,
+      "archived": false
+    }
+  ],
+  "coverage": {
+    "satellite_default_branch_indexed_content": "searched_for_all_legacy_identifiers",
+    "public_source_forks": "verified_zero_at_observation_time",
+    "package_registry_consumers": "not_proven",
+    "private_clones_or_installations": "not_observable",
+    "explicit_private_or_unpublished_pilots": "human_attestation_required",
+    "complete": false
+  },
+  "distribution_note": "The audited 0.3.0 source intentionally retains the repo-doctor-ai Python distribution because the shorter repo-doctor PyPI name is documented there as belonging to an unrelated third-party project.",
+  "interpretation": "No legacy identity references were returned from connected default-branch search across the 14 public satellite repositories, and the public source reports zero forks/network count. This reduces observed public migration risk but cannot prove zero package-registry users, private clones, unpublished installs or human-known pilots.",
+  "redirect_gate": "BLOCKED",
+  "alias_removal_gate": "BLOCKED",
+  "archive_gate": "BLOCKED",
+  "next_required_evidence": [
+    "package-registry publication and consumer check for repo-doctor-ai",
+    "human attestation for private/unpublished pilots or adopters",
+    "migration receipt for every externally known consumer",
+    "exact source-history import or independently verified ancestry",
+    "real rollback rehearsal bound to the final candidate SHA",
+    "explicit human approval before redirect, alias removal, release replacement or archive"
+  ]
+}

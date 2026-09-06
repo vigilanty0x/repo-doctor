@@ -1,0 +1,15 @@
+{
+  "repositories": [
+    {
+      "name": "core",
+      "dependencies": []
+    },
+    {
+      "name": "app",
+      "dependencies": [
+        "core"
+      ]
+    }
+  ]
+}
+

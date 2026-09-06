@@ -1,0 +1,73 @@
+{
+  "schema_version": "repo-doctor/migration-status-v1",
+  "target": "vigilanty0x/repo-doctor",
+  "source": "vigilanty0x/repo-doctor-ai",
+  "source_commit": "2886565887920e221777153c5a68f344d79319a6",
+  "source_root_tree": "399f2c32a600c65ac5660541f2bfa258eac09b46",
+  "source_package_tree": "5c1c029bebb9a080d061aed6ebdcb05689a51160",
+  "source_release": "0.3.0",
+  "source_verification": {
+    "workflow_run": 32064296603,
+    "tests": 115,
+    "matrix": [
+      "ubuntu/python-3.11",
+      "ubuntu/python-3.12",
+      "windows/python-3.11",
+      "windows/python-3.12"
+    ],
+    "release_gate": [
+      "source_tests",
+      "compileall",
+      "git_diff_check",
+      "offline_source_install",
+      "offline_wheel_install",
+      "offline_sdist_install",
+      "wheel_sdist_payload_parity",
+      "installed_cli_smoke"
+    ]
+  },
+  "identity": {
+    "product": "Repo Doctor",
+    "repository": "repo-doctor",
+    "cli": "repo-doctor",
+    "canonical_import": "repo_doctor",
+    "legacy_import": "repo_doctor_ai",
+    "python_distribution": "repo-doctor-ai",
+    "distribution_exception": "The audited 0.3.0 source documents that the repo-doctor PyPI name belongs to an unrelated third-party project; retaining repo-doctor-ai avoids a registry collision."
+  },
+  "port": {
+    "source_0_3_changed_blobs": "EXACT_GIT_BLOB_COPY",
+    "legacy_implementation_rewritten": false,
+    "canonical_alias_added": true,
+    "alias_parity_test_added": true
+  },
+  "history": {
+    "exact_source_commit_reachable_at_start": false,
+    "gate": "BLOCKED_UNTIL_EXACT_SOURCE_ANCESTRY_IS_REACHABLE_AND_VERIFIED"
+  },
+  "consumers": {
+    "inventory": "NOT_YET_COMPLETE",
+    "redirect": "NOT_RUN",
+    "alias_removal": "NOT_RUN",
+    "archive": "NOT_RUN"
+  },
+  "rollback": {
+    "contract": "docs/IDENTITY_MIGRATION.md",
+    "final_head_receipt": "NOT_YET_EXECUTED",
+    "source_repository_preserved": true
+  },
+  "release": {
+    "publication": "NOT_RUN",
+    "human_approval": "REQUIRED"
+  },
+  "status": "PREPARED",
+  "not_claimed": [
+    "MERGED",
+    "TAGGED",
+    "RELEASED",
+    "POST_RELEASE_VERIFIED",
+    "REDIRECTED",
+    "ALIAS_REMOVED",
+    "ARCHIVED"
+  ]
+}

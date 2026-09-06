@@ -1,0 +1,11 @@
+{
+  "manifest": {
+    "python": "3.12",
+    "tool": "1.0"
+  },
+  "installed": {
+    "python": "3.12",
+    "tool": "1.0"
+  }
+}
+

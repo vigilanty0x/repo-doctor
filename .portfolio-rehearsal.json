@@ -1,0 +1,123 @@
+{
+  "schemaVersion": 1,
+  "target": "repo-doctor",
+  "base": "repo-doctor-ai",
+  "baseHeadSha": "ba82d0f5fcf80d5bb863a599580b8d080527bc7b",
+  "sources": [
+    {
+      "repository": "ai-setup-doctor",
+      "prefix": "packages/ai-setup-doctor",
+      "headSha": "98f05519346e465b8124861e786b1937b3bf0729",
+      "treeSha": "1e3b40309b531a28310480d7dc519da632dc652b",
+      "ancestor": true,
+      "treeMatch": true
+    },
+    {
+      "repository": "service-doctor",
+      "prefix": "packages/service-doctor",
+      "headSha": "05be8b5b3d4e74267543bbcd156412212157d982",
+      "treeSha": "6360b7dd8092ddb2cef11fc442297b0d5f4fcd69",
+      "ancestor": true,
+      "treeMatch": true
+    },
+    {
+      "repository": "docker-stack-doctor",
+      "prefix": "packages/docker-stack-doctor",
+      "headSha": "460da37025f0d04a1a474da46b61ccd9454eea25",
+      "treeSha": "6059d02ba7f1028d78ff31e2dcd8d6dad1531d02",
+      "ancestor": true,
+      "treeMatch": true
+    },
+    {
+      "repository": "port-conflict-doctor",
+      "prefix": "packages/port-conflict-doctor",
+      "headSha": "fd4097d51d1b717a88f77047008de7de3574ec67",
+      "treeSha": "c41e2818794f45a92a1ba3743c3bee7d0b4a4e62",
+      "ancestor": true,
+      "treeMatch": true
+    },
+    {
+      "repository": "config-drift-detector",
+      "prefix": "packages/config-drift-detector",
+      "headSha": "321991b314e55f357748130a663dfc24b57d33ca",
+      "treeSha": "57e40f74f3ac7fb833312efae6ab97c3768d9dac",
+      "ancestor": true,
+      "treeMatch": true
+    },
+    {
+      "repository": "healthcheck-hub",
+      "prefix": "packages/healthcheck-hub",
+      "headSha": "c8f956210792a415b3b97f69cdd1edb108ca9608",
+      "treeSha": "948374a7d24cc41ec994fe302c5236cfdbd482e8",
+      "ancestor": true,
+      "treeMatch": true
+    },
+    {
+      "repository": "sqlite-health-doctor",
+      "prefix": "packages/sqlite-health-doctor",
+      "headSha": "8b2548056b05cd592187f7fa23afd67b05bf3446",
+      "treeSha": "6cbdf0e6ca581a83b4f0461485865b324bb3703c",
+      "ancestor": true,
+      "treeMatch": true
+    },
+    {
+      "repository": "migration-verifier",
+      "prefix": "packages/migration-verifier",
+      "headSha": "e0870516577d27ab3a301174b870d527faae90b0",
+      "treeSha": "bb99a3d7356d0326b6d83cb601f4147401f502e3",
+      "ancestor": true,
+      "treeMatch": true
+    },
+    {
+      "repository": "duplicate-finder",
+      "prefix": "packages/duplicate-finder",
+      "headSha": "6ca31cc0fd591237510e7ce7eccab8d77887651f",
+      "treeSha": "1e2a6cb3d5aa5a4ba1d5c5a39a689ddbd82048a3",
+      "ancestor": true,
+      "treeMatch": true
+    },
+    {
+      "repository": "backup-verifier",
+      "prefix": "packages/backup-verifier",
+      "headSha": "6b21b29accf7e9f5b9e8879800dd51fcb68b6c2f",
+      "treeSha": "6205bd0c847eb3f5f602444b4dd3ff43e91b1a18",
+      "ancestor": true,
+      "treeMatch": true
+    },
+    {
+      "repository": "repo-dependency-graph",
+      "prefix": "packages/repo-dependency-graph",
+      "headSha": "f7d190a4b2997a34ecab5d00ca06caf896f515e7",
+      "treeSha": "71c3e7dd5276433c63e67a863b5a454035979c75",
+      "ancestor": true,
+      "treeMatch": true
+    },
+    {
+      "repository": "dependency-drift-reporter",
+      "prefix": "packages/dependency-drift-reporter",
+      "headSha": "5af035db71c6cbd0c3f168929714a6d49994526b",
+      "treeSha": "faa8ae9cebfcf95d1b18d578d20e43a2d3529d9d",
+      "ancestor": true,
+      "treeMatch": true
+    },
+    {
+      "repository": "container-resource-profiler",
+      "prefix": "packages/container-resource-profiler",
+      "headSha": "eaf9d4dbf71f75249e7556102c216cda6b737b47",
+      "treeSha": "ff5fd1bd0d5941dd1ae3eb9c74d50ef06a0034d5",
+      "ancestor": true,
+      "treeMatch": true
+    },
+    {
+      "repository": "sqlite-query-plan-visualizer",
+      "prefix": "packages/sqlite-query-plan-visualizer",
+      "headSha": "e6e0b4087e43eeee90419c1b569fbf1b310f201d",
+      "treeSha": "cfeda176aef5f2f8438471bb2f7d5f88c5d40c50",
+      "ancestor": true,
+      "treeMatch": true
+    }
+  ],
+  "state": "REHEARSAL_ONLY",
+  "archiveGate": "BLOCKED",
+  "reason": "Tests, compatibility, release, redirect, consumer, rollback, and human gates are not all verified."
+}

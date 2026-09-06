@@ -1,0 +1,15 @@
+{
+  "expected": {
+    "data.json": {
+      "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "size": 12
+    }
+  },
+  "observed": {
+    "data.json": {
+      "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "size": 12
+    }
+  }
+}
+

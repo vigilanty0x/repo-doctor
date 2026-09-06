@@ -1,0 +1,16 @@
+{
+  "records": [
+    {
+      "id": "1",
+      "name": " Example "
+    },
+    {
+      "id": "2",
+      "name": "example"
+    }
+  ],
+  "fields": [
+    "name"
+  ]
+}
+

@@ -1,0 +1,12 @@
+{
+  "query": "SELECT value FROM items WHERE key = ?",
+  "parameters": ["a"],
+  "fixture": {
+    "tables": [{
+      "name": "items",
+      "columns": [{"name": "key", "type": "TEXT"}, {"name": "value", "type": "TEXT"}],
+      "rows": [["a", "one"], ["b", "two"]]
+    }],
+    "indexes": [{"name": "idx_items_key", "table": "items", "columns": ["key"]}]
+  }
+}

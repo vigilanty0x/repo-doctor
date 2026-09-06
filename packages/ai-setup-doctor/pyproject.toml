@@ -1,0 +1,40 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ai-setup-doctor"
+version = "0.1.0"
+description = "Bounded, evidence-first diagnostics for local AI development prerequisites."
+readme = "README.md"
+requires-python = ">=3.11"
+license = {text = "Apache-2.0"}
+authors = [{name = "AI Setup Doctor contributors"}]
+keywords = ["diagnostics", "developer-tools", "ai", "cli"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "License :: OSI Approved :: Apache Software License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+]
+dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/vigilanty0x/ai-setup-doctor"
+Repository = "https://github.com/vigilanty0x/ai-setup-doctor"
+Issues = "https://github.com/vigilanty0x/ai-setup-doctor/issues"
+
+[project.scripts]
+ai-setup-doctor = "ai_setup_doctor.cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+

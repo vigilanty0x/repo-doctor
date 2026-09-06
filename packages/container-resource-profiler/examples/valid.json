@@ -1,0 +1,9 @@
+{
+  "scenario": "startup",
+  "cpu_percent": 32.5,
+  "memory_mb": 128,
+  "io_mb": 2,
+  "network_mb": 1,
+  "startup_ms": 900
+}
+
