@@ -15,7 +15,7 @@ from repo_doctor_ai.config import Config, DEFAULT_EXCLUDES
 from repo_doctor_ai.io_utils import ConfinedReader
 from repo_doctor_ai.registry import RegistryError, RegistryDeadlineExceeded, RulePlugin, RuleRegistry
 from repo_doctor_ai.rules import SourceFile, build_default_registry
-from repo_doctor_ai.scanner import Scanner
+
 from repo_doctor_ai.workflow import run_workflow
 
 

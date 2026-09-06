@@ -136,7 +136,7 @@ def _findings(report: Any) -> list[dict[str, Any]]:
     for finding in report["findings"]:
         _validate_finding(finding)
         fingerprint = finding.get("fingerprint")
-        severity = finding.get("severity")
+        finding.get("severity")
         if fingerprint in seen:
             raise ReportDataError("report contains duplicate finding fingerprints")
         seen.add(fingerprint)
