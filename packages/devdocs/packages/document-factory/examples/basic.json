@@ -1,0 +1,7 @@
+{
+  "template": "# Status for {{service}}",
+  "values": {
+    "service": "demo"
+  }
+}
+

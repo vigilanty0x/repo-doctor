@@ -1,0 +1,17 @@
+[build-system]
+requires=["setuptools>=68"]
+build-backend="setuptools.build_meta"
+[project]
+name="failure-postmortem-kit"
+version="0.1.0"
+description="Evidence-oriented blameless postmortem generator"
+readme="README.md"
+requires-python=">=3.11"
+license={text="Apache-2.0"}
+dependencies=[]
+[project.scripts]
+postmortem-kit="failure_postmortem_kit:main"
+[tool.setuptools]
+package-dir={""="src"}
+[tool.setuptools.packages.find]
+where=["src"]

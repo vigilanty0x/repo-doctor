@@ -1,0 +1,21 @@
+{
+  "incident": "Example outage",
+  "impact": "Synthetic request failed.",
+  "timeline": [
+    "10:00 alarm fired"
+  ],
+  "evidence": [
+    "metric sample"
+  ],
+  "causes": [
+    "configuration error"
+  ],
+  "actions": [
+    {
+      "owner": "team",
+      "due": "2026-09-01",
+      "action": "Add a guardrail"
+    }
+  ]
+}
+

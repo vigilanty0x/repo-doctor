@@ -1,0 +1,19 @@
+{
+  "nodes": [
+    {
+      "id": "api",
+      "label": "Public API"
+    },
+    {
+      "id": "worker",
+      "label": "Worker"
+    }
+  ],
+  "edges": [
+    {
+      "from": "api",
+      "to": "worker"
+    }
+  ]
+}
+

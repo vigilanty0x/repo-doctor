@@ -1,0 +1,13 @@
+{
+  "project": "sample",
+  "entrypoints": [
+    "src/app.py"
+  ],
+  "commands": [
+    "python -m app"
+  ],
+  "tests": [
+    "python -m unittest"
+  ]
+}
+
