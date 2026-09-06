@@ -1,0 +1,113 @@
+{
+  "$schema": "https://github.com/vigilanty0x/ai-assistance-manifest/raw/main/src/ai_assistance_manifest/schema/manifest.schema.json",
+  "assistance": {
+    "autonomy": "collaborative",
+    "human_review": {
+      "final_authority": "vigilanty0x",
+      "required": true
+    },
+    "summary": "An OpenAI coding assistant drafted the initial implementation from a human-selected public roadmap item. The repository owner authorized publication, set the public-only boundary, and retains final authority."
+  },
+  "contributions": {
+    "ai": [
+      {
+        "artifacts": [
+          "src/ai_assistance_manifest",
+          "tests",
+          "README.md",
+          "SPEC.md"
+        ],
+        "evidence_refs": [
+          "unit-tests",
+          "ci-workflow",
+          "specification"
+        ],
+        "id": "initial-build",
+        "model_ref": "openai-codex",
+        "reviewed_by": "vigilanty0x",
+        "tasks": [
+          "Translate the public project brief into a versioned format",
+          "Implement validation, rendering, and CLI behavior",
+          "Create tests and public documentation"
+        ]
+      }
+    ],
+    "human": [
+      {
+        "actor": "vigilanty0x",
+        "decisions": [
+          "Selected PUB-015 from the public roadmap",
+          "Required complete separation from all private projects",
+          "Authorized creation and publication of the standalone repository"
+        ],
+        "roles": [
+          "Repository owner",
+          "Product owner",
+          "Final decision-maker"
+        ]
+      }
+    ]
+  },
+  "decisions": [
+    "Use JSON as the canonical format so validation needs no YAML parser.",
+    "Keep the runtime dependency-free on Python 3.11 and newer.",
+    "Use stable diagnostic codes and deterministic Markdown output."
+  ],
+  "evidence": [
+    {
+      "description": "Dependency-free unit and CLI test suite",
+      "id": "unit-tests",
+      "location": "tests",
+      "status": "verified",
+      "type": "test"
+    },
+    {
+      "description": "GitHub Actions validation on supported Python versions",
+      "id": "ci-workflow",
+      "location": ".github/workflows/ci.yml",
+      "status": "verified",
+      "type": "file"
+    },
+    {
+      "description": "Version 1.0 format and behavior specification",
+      "id": "specification",
+      "location": "SPEC.md",
+      "status": "verified",
+      "type": "file"
+    }
+  ],
+  "incidents": [],
+  "limitations": [
+    "The declaration is self-reported and cannot independently prove authorship or exact model execution.",
+    "The secret scanner uses conservative signatures and cannot detect every credential format.",
+    "The validator checks declarations and evidence references; it does not certify software quality or legal compliance."
+  ],
+  "models": [
+    {
+      "data_access": "The public roadmap brief and files created for this standalone repository",
+      "id": "openai-codex",
+      "name": "OpenAI Codex, GPT-5 family",
+      "provider": "OpenAI",
+      "roles": [
+        "Architecture",
+        "Implementation",
+        "Testing",
+        "Documentation"
+      ],
+      "version": "work-session 2026-08-15"
+    }
+  ],
+  "project": {
+    "name": "ai-assistance-manifest",
+    "owners": [
+      {
+        "name": "vigilanty0x",
+        "role": "Maintainer and final decision-maker"
+      }
+    ],
+    "repository": "https://github.com/vigilanty0x/ai-assistance-manifest",
+    "version": "0.1.0"
+  },
+  "schema_version": "1.0"
+}
+

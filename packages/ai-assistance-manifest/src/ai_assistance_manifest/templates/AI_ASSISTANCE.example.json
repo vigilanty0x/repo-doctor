@@ -1,0 +1,83 @@
+{
+  "$schema": "https://github.com/vigilanty0x/ai-assistance-manifest/raw/main/src/ai_assistance_manifest/schema/manifest.schema.json",
+  "assistance": {
+    "autonomy": "collaborative",
+    "human_review": {
+      "final_authority": "Project maintainer",
+      "required": true
+    },
+    "summary": "AI systems assisted with implementation and documentation. A human maintainer defined scope, reviewed changes, and retained final authority."
+  },
+  "contributions": {
+    "ai": [
+      {
+        "artifacts": [
+          "src/example.py",
+          "tests/test_example.py"
+        ],
+        "evidence_refs": [
+          "tests"
+        ],
+        "id": "implementation-pass",
+        "model_ref": "assistant",
+        "reviewed_by": "Project maintainer",
+        "tasks": [
+          "Draft implementation",
+          "Draft regression tests"
+        ]
+      }
+    ],
+    "human": [
+      {
+        "actor": "Project maintainer",
+        "decisions": [
+          "Defined requirements and acceptance criteria",
+          "Reviewed the final diff and test evidence"
+        ],
+        "roles": [
+          "Product owner",
+          "Reviewer"
+        ]
+      }
+    ]
+  },
+  "evidence": [
+    {
+      "description": "Automated regression tests",
+      "id": "tests",
+      "location": "tests",
+      "status": "verified",
+      "type": "test"
+    }
+  ],
+  "limitations": [
+    "This declaration is self-reported and does not prove authorship.",
+    "Validation checks structure and references, not software quality."
+  ],
+  "models": [
+    {
+      "data_access": "Repository files explicitly provided in the task context",
+      "id": "assistant",
+      "name": "Example coding assistant",
+      "provider": "Example provider",
+      "roles": [
+        "Implementation",
+        "Testing"
+      ],
+      "version": "record the exact version when known"
+    }
+  ],
+  "project": {
+    "name": "example-project",
+    "owners": [
+      {
+        "name": "Project maintainer",
+        "role": "Final decision-maker"
+      }
+    ],
+    "repository": "https://example.com/example-project",
+    "version": "0.1.0"
+  },
+  "schema_version": "1.0"
+}
+
