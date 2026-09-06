@@ -1,0 +1,118 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  integration-contract:
+    name: DevDocs integration contract and counter-proofs
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: "3.12"
+      - name: Validate DevDocs integration contract
+        run: python scripts/check_devdocs_integration.py
+      - name: Run integration counter-proofs
+        run: python -m unittest discover -s tests -v
+      - name: Compile integration checks
+        run: python -m compileall -q scripts tests
+
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12"]
+        package:
+          - codebase-onboarding-guide-generator
+          - document-factory
+          - event-log-explorer
+          - failure-postmortem-kit
+          - runbook-builder
+          - state-machine-visualizer
+          - system-map-generator
+    defaults:
+      run:
+        working-directory: packages/${{ matrix.package }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install pinned build tooling
+        run: >-
+          python -m pip install --disable-pip-version-check
+          "setuptools==83.0.0" "wheel==0.45.1"
+      - name: Build wheel without dependency resolution
+        env:
+          PIP_NO_INDEX: "1"
+        run: python -m pip wheel --no-build-isolation --no-deps --wheel-dir dist .
+      - name: Install wheel without dependency resolution
+        env:
+          PIP_NO_INDEX: "1"
+        run: python -m pip install --no-index --no-deps --force-reinstall dist/*.whl
+      - name: Install offline verification guard
+        run: |
+          mkdir -p "$RUNNER_TEMP/offline-python"
+          cat > "$RUNNER_TEMP/offline-python/sitecustomize.py" <<'PY'
+          import socket
+
+          _socket = socket.socket
+
+
+          class OfflineSocket(_socket):
+              def __init__(self, family=socket.AF_INET, *args, **kwargs):
+                  if family in (socket.AF_INET, socket.AF_INET6):
+                      raise OSError("network disabled during verification")
+                  super().__init__(family, *args, **kwargs)
+
+
+          def _blocked(*_args, **_kwargs):
+              raise OSError("network disabled during verification")
+
+
+          socket.socket = OfflineSocket
+          socket.create_connection = _blocked
+          socket.getaddrinfo = _blocked
+          PY
+          PYTHONPATH="$RUNNER_TEMP/offline-python" python - <<'PY'
+          import socket
+
+          try:
+              socket.socket()
+          except OSError as error:
+              assert str(error) == "network disabled during verification"
+          else:
+              raise SystemExit("offline verification guard is inactive")
+          PY
+      - name: Compile sources without network
+        env:
+          PIP_NO_INDEX: "1"
+          PYTHONPYCACHEPREFIX: ${{ runner.temp }}/pycache
+          PYTHONPATH: ${{ runner.temp }}/offline-python
+        run: python -m compileall -q -f src
+      - name: Unit tests without network
+        env:
+          PIP_NO_INDEX: "1"
+          PYTHONPYCACHEPREFIX: ${{ runner.temp }}/pycache
+          PYTHONPATH: ${{ runner.temp }}/offline-python
+        run: python -m unittest discover -s tests -v
+      - name: Repository checks without network
+        env:
+          PIP_NO_INDEX: "1"
+          PYTHONPYCACHEPREFIX: ${{ runner.temp }}/pycache
+          PYTHONPATH: ${{ runner.temp }}/offline-python
+        run: python scripts/check.py

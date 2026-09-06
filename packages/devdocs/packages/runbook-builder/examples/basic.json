@@ -1,0 +1,15 @@
+{
+  "service": "demo-api",
+  "trigger": "latency alarm",
+  "owner": "platform-team",
+  "steps": [
+    "Inspect metrics"
+  ],
+  "verification": [
+    "Confirm recovery"
+  ],
+  "rollback": [
+    "Restore previous release"
+  ]
+}
+

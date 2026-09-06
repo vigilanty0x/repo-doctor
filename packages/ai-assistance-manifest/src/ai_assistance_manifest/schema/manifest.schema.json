@@ -1,0 +1,137 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/vigilanty0x/ai-assistance-manifest/raw/main/src/ai_assistance_manifest/schema/manifest.schema.json",
+  "title": "AI Assistance Manifest",
+  "description": "A transparent declaration of human and AI contributions to a software project.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "project",
+    "assistance",
+    "models",
+    "contributions",
+    "evidence",
+    "limitations"
+  ],
+  "properties": {
+    "$schema": {"type": "string", "format": "uri-reference"},
+    "schema_version": {"const": "1.0"},
+    "project": {
+      "type": "object",
+      "required": ["name", "owners"],
+      "properties": {
+        "name": {"type": "string", "minLength": 1},
+        "version": {"type": "string", "minLength": 1},
+        "repository": {"type": "string", "format": "uri"},
+        "owners": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["name"],
+            "properties": {
+              "name": {"type": "string", "minLength": 1},
+              "role": {"type": "string", "minLength": 1}
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "assistance": {
+      "type": "object",
+      "required": ["summary", "autonomy", "human_review"],
+      "properties": {
+        "summary": {"type": "string", "minLength": 1},
+        "autonomy": {"enum": ["assistive", "collaborative", "agentic"]},
+        "human_review": {
+          "type": "object",
+          "required": ["required", "final_authority"],
+          "properties": {
+            "required": {"type": "boolean"},
+            "final_authority": {"type": "string", "minLength": 1}
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "models": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "provider", "name", "roles"],
+        "properties": {
+          "id": {"type": "string", "minLength": 1},
+          "provider": {"type": "string", "minLength": 1},
+          "name": {"type": "string", "minLength": 1},
+          "version": {"type": "string"},
+          "roles": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+          "data_access": {"type": "string"}
+        },
+        "additionalProperties": false
+      }
+    },
+    "contributions": {
+      "type": "object",
+      "required": ["human", "ai"],
+      "properties": {
+        "human": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["actor", "roles", "decisions"],
+            "properties": {
+              "actor": {"type": "string", "minLength": 1},
+              "roles": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+              "decisions": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}}
+            },
+            "additionalProperties": false
+          }
+        },
+        "ai": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["id", "model_ref", "tasks", "artifacts", "evidence_refs", "reviewed_by"],
+            "properties": {
+              "id": {"type": "string", "minLength": 1},
+              "model_ref": {"type": "string", "minLength": 1},
+              "tasks": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+              "artifacts": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+              "evidence_refs": {"type": "array", "items": {"type": "string", "minLength": 1}},
+              "reviewed_by": {"type": "string", "minLength": 1}
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "type", "status", "location", "description"],
+        "properties": {
+          "id": {"type": "string", "minLength": 1},
+          "type": {"enum": ["file", "test", "report", "commit", "url"]},
+          "status": {"enum": ["verified", "inferred", "blocked", "unknown"]},
+          "location": {"type": "string", "minLength": 1},
+          "description": {"type": "string", "minLength": 1}
+        },
+        "additionalProperties": false
+      }
+    },
+    "limitations": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+    "decisions": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "incidents": {"type": "array", "items": {"type": "string", "minLength": 1}}
+  },
+  "patternProperties": {"^x-": {}},
+  "additionalProperties": false
+}
+

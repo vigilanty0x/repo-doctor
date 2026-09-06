@@ -1,0 +1,20 @@
+{
+  "name": "job",
+  "states": [
+    "queued",
+    "running",
+    "done"
+  ],
+  "initial": "queued",
+  "transitions": [
+    [
+      "queued",
+      "running"
+    ],
+    [
+      "running",
+      "done"
+    ]
+  ]
+}
+

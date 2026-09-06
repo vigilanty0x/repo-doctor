@@ -4,6 +4,33 @@ Repo Doctor is an offline, dependency-free repository auditor for engineering te
 
 No source leaves the machine. No account, model endpoint, network connection, daemon, or database is required.
 
+## Concrete monorepo
+
+Repo Doctor is the canonical repository for repository diagnostics, operational
+documentation, and auditable AI-contribution provenance. The consolidation keeps
+each tool independently buildable under `packages/` while the root CLI remains
+the primary repository-audit entry point.
+
+| Area | Location | Included tools |
+|---|---|---|
+| Repository audit | `.` | `repo-doctor` scanner, reports, baselines, diffs, remediation plans, and SBOM generation |
+| Repository and runtime diagnostics | `packages/` | `ai-setup-doctor`, `backup-verifier`, `config-drift-detector`, `container-resource-profiler`, `dependency-drift-reporter`, `docker-stack-doctor`, `duplicate-finder`, `healthcheck-hub`, `migration-verifier`, `port-conflict-doctor`, `repo-dependency-graph`, `service-doctor`, `sqlite-health-doctor`, and `sqlite-query-plan-visualizer` |
+| Developer documentation | `packages/devdocs/` | Integration contract plus `codebase-onboarding-guide-generator`, `document-factory`, `event-log-explorer`, `failure-postmortem-kit`, `runbook-builder`, `state-machine-visualizer`, and `system-map-generator` |
+| AI provenance | `packages/ai-assistance-manifest/` | `aim` manifest CLI and `ai-project-provenance-badge` |
+
+[`MONOREPO.json`](MONOREPO.json) binds the 26 source repositories to their
+canonical paths and immutable source revisions. It deliberately records
+`delete_authorized: false`: a valid consolidation manifest proves the mapping,
+not permission to delete a source repository.
+
+Validate the map and exercise an imported suite from a development checkout:
+
+```bash
+python scripts/check_monorepo.py
+(cd packages/devdocs && python scripts/check_devdocs_integration.py)
+(cd packages/ai-assistance-manifest && python -m unittest discover -s tests -v)
+```
+
 ## Why it is different
 
 - **Evidence first:** every finding contains a stable code, classification, bounded evidence, remediation, and fingerprint.

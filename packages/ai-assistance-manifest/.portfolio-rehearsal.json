@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "target": "ai-assistance-manifest",
+  "base": "ai-assistance-manifest",
+  "baseHeadSha": "d47ed252a2f480a378a0906421e9ed969b5d8bec",
+  "sources": [
+    {
+      "repository": "ai-project-provenance-badge",
+      "prefix": "packages/ai-project-provenance-badge",
+      "headSha": "ad1111faaf9d77f004fac68e7761a24fb1685be6",
+      "treeSha": "2bd87ce66c743b856c0166333fd56fda35c84f66",
+      "ancestor": true,
+      "treeMatch": true
+    }
+  ],
+  "state": "REHEARSAL_ONLY",
+  "archiveGate": "BLOCKED",
+  "reason": "Tests, compatibility, release, redirect, consumer, rollback, and human gates are not all verified."
+}

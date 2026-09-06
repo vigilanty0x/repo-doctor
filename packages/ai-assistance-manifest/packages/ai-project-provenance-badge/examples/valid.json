@@ -1,0 +1,14 @@
+{
+  "project": "sample",
+  "assistance_level": "assisted",
+  "supervision": "human-reviewed",
+  "tests_passed": 12,
+  "evidence_url": "https://example.invalid/evidence",
+  "evidence": {
+    "artifact_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "test_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "review_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+    "issuer": "release-job",
+    "issued_at": "2026-08-15T00:00:00Z"
+  }
+}

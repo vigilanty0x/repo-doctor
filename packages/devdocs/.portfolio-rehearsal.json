@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "target": "devdocs",
+  "base": null,
+  "baseHeadSha": null,
+  "sources": [
+    {
+      "repository": "document-factory",
+      "prefix": "packages/document-factory",
+      "headSha": "fdb359020db487e8e6fad3dab47161317aa0ed2c",
+      "treeSha": "b038049bb9f9af54bb1b63c3950c278cc56f89b7",
+      "ancestor": true,
+      "treeMatch": true
+    },
+    {
+      "repository": "runbook-builder",
+      "prefix": "packages/runbook-builder",
+      "headSha": "fdd60d70aab096a468773c149319453fbebe068b",
+      "treeSha": "fb3e12059ba9d324efa4392810fb45a666b3edae",
+      "ancestor": true,
+      "treeMatch": true
+    },
+    {
+      "repository": "failure-postmortem-kit",
+      "prefix": "packages/failure-postmortem-kit",
+      "headSha": "85b11f50bc4e683d8414be2ffe902a0c4183c4d9",
+      "treeSha": "4db1cc94bc75c0ce54e2b555215be19889e0da3b",
+      "ancestor": true,
+      "treeMatch": true
+    },
+    {
+      "repository": "system-map-generator",
+      "prefix": "packages/system-map-generator",
+      "headSha": "70bec119a83595e1b4c2b2566b5f0349121356a4",
+      "treeSha": "64f36405b736a4d4667efe3a2464d0b456257e43",
+      "ancestor": true,
+      "treeMatch": true
+    },
+    {
+      "repository": "codebase-onboarding-guide-generator",
+      "prefix": "packages/codebase-onboarding-guide-generator",
+      "headSha": "0e4370c0720865725849320c648201dce6b8b13b",
+      "treeSha": "84fa5ca76ee9559764d745fc5f3aa0412f35a7b5",
+      "ancestor": true,
+      "treeMatch": true
+    },
+    {
+      "repository": "state-machine-visualizer",
+      "prefix": "packages/state-machine-visualizer",
+      "headSha": "f47cc7bf1b18b68a343715478820310a4b35ea23",
+      "treeSha": "7d8f0601e7f091d14933eb66b57a82e3bda536b6",
+      "ancestor": true,
+      "treeMatch": true
+    },
+    {
+      "repository": "event-log-explorer",
+      "prefix": "packages/event-log-explorer",
+      "headSha": "15bad3899f559855533b9b935422171ea85c95bd",
+      "treeSha": "326f6e74a041c40c8c81d9b3d3e3c4cf4d27b2eb",
+      "ancestor": true,
+      "treeMatch": true
+    }
+  ],
+  "state": "REHEARSAL_ONLY",
+  "archiveGate": "BLOCKED",
+  "reason": "Tests, compatibility, release, redirect, consumer, rollback, and human gates are not all verified."
+}
