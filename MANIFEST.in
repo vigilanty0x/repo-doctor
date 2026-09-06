@@ -1,3 +1,4 @@
+include .gitattributes
 include LICENSE
 include README.md SECURITY.md CONTRIBUTING.md CHANGELOG.md SPEC.md DECISIONS.md MAINTAINERS.md
 include AI_ASSISTANCE.md AI_ASSISTANCE.json BUILD_METRICS.json
