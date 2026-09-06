@@ -82,6 +82,37 @@ Schema `repo-doctor-remediation-plan/1` groups active findings by code. Work ite
 
 The SBOM is a deterministic CycloneDX 1.5 compatible manifest inventory. It covers supported Python, npm, Go, Rust, and Docker declarations without resolving transitive dependencies or contacting registries. Invalid JSON/TOML and structurally invalid dependency sections reject generation. Direct URLs are masked and credential-shaped component fields are sanitized. It does not claim vulnerability, license, or reachability status.
 
+## npm lock comparison
+
+`builtin.dependency-lock-drift` is explicitly registered under `dependencies`.
+It consumes only the Scanner's observed `SourceFile` values, without opening any
+additional file or importing target code. Exact direct `dependencies` and
+`devDependencies` in `package.json` are compared to the sibling
+`package-lock.json` v2/v3 `packages["node_modules/NAME"].version` observations.
+Installed state and dependency-resolution semantics are not measured.
+
+`DEPENDENCY_LOCK_DRIFT` and `DEPENDENCY_LOCK_ENTRY_MISSING` are high-severity
+proofs about those recorded declarations. `DEPENDENCY_LOCK_UNMEASURED` is a
+low-severity inference stating why a comparison was not made; it is not evidence
+of matching versions. `status=verified` still means a bounded configured rule
+pass completed. A DONE/WARN result can exit 0 under the high threshold, including
+unmeasured findings; require `--fail-on low` if these must veto the quality gate.
+
+Malformed supported JSON, unread supported content, invalid map/entry shapes or
+comparison budget overflow raise `RegistryError`. Scan CLI returns 2; integrated
+run records FAILED with a false gate, including under `--fail-on none`.
+Ranges, aliases, workspaces, overrides, links, optional-scope overlaps, conflicting
+direct scopes, unknown lock versions and absent package-lock observations remain
+explicitly unmeasured. A sibling shrinkwrap causes a refusal to choose a
+package-lock authority. No target environment or node_modules tree is inspected.
+
+Version comparison is exact text over bounded maps, not semver resolution.
+Evidence includes names and SHA-256 digests only. The source text hashes refer
+to the Scanner's decoded text re-encoded as UTF-8, including its replacement
+decoding policy; they are not a claim about original undecodable file bytes.
+Existing confidentiality sanitizers, finding limits, deadlines, baselines and
+schema identities apply unchanged. See `docs/NPM-LOCK-COMPARISON.md`.
+
 ## Journal
 
 Journal events contain event ID, caller run ID, one-based sequence, UTC timestamp, sanitized report, previous hash, and event hash. Replay verifies exact fields, strict finite JSON, final newline, unique run IDs, sequence, link, safe strings, and SHA-256 content hash. A companion OS lock serializes cooperating processes, append is size-fenced before the write, and idempotency compares canonical typed JSON. The CLI rejects report-output aliases to the journal and lock. The journal is tamper-evident, not signed; non-cooperating direct file writers remain outside the trust boundary.

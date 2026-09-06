@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+- Register a native, bounded rule comparing exact direct npm declarations with sibling package-lock v2/v3 recorded versions.
+- Preserve unmeasured scopes explicitly; malformed supported lock observations fail the rule instead of yielding a healthy workflow.
+- Retain existing report/workflow schemas, source confidentiality and no-target-execution boundaries; prove the comparison against the preserved dependency-drift-reporter source.
+
 ## 0.3.0 - 2026-08-17
 
 - Add a portable confined-reader backend for Windows and other platforms without descriptor-relative opens, with component, root, reparse-point, opened-file, and post-read identity checks.

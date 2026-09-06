@@ -5,6 +5,7 @@ from .baseline import Baseline, BaselineEntry, BaselineError, load_baseline
 from .models import Finding, Report, SuppressedFinding
 from .registry import RegistryError, RulePlugin, RuleRegistry
 from .scanner import Scanner
+from .workflow import run_workflow
 
 __all__ = [
     "Baseline",
@@ -21,5 +22,6 @@ __all__ = [
     "SuppressedFinding",
     "load_baseline",
     "load_config",
+    "run_workflow",
 ]
 __version__ = "0.3.0"
