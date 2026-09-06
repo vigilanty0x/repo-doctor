@@ -1,0 +1,323 @@
+{
+  "delete_authorized": false,
+  "schema_version": 1,
+  "status": "LOCAL_PREPARATION",
+  "target": {
+    "kind": "PRODUCT",
+    "repository": "vigilanty0x/repo-doctor",
+    "sources": [
+      {
+        "disposition": "ABSORB",
+        "repository": "vigilanty0x/ai-assistance-manifest",
+        "source": {
+          "archived": false,
+          "default_branch": "main",
+          "head": "15ef3812c134fec38e7696a7e687e286ec9822ec",
+          "tree": "c139c3483bd116e383e056300395689979077d42",
+          "visibility": "PUBLIC"
+        },
+        "target_path": "packages/ai-assistance-manifest"
+      },
+      {
+        "disposition": "ABSORB",
+        "repository": "vigilanty0x/ai-project-provenance-badge",
+        "source": {
+          "archived": false,
+          "default_branch": "main",
+          "head": "ad1111faaf9d77f004fac68e7761a24fb1685be6",
+          "tree": "2bd87ce66c743b856c0166333fd56fda35c84f66",
+          "visibility": "PUBLIC"
+        },
+        "target_path": "packages/ai-assistance-manifest/packages/ai-project-provenance-badge"
+      },
+      {
+        "disposition": "ABSORB",
+        "repository": "vigilanty0x/ai-setup-doctor",
+        "source": {
+          "archived": false,
+          "default_branch": "main",
+          "head": "98f05519346e465b8124861e786b1937b3bf0729",
+          "tree": "1e3b40309b531a28310480d7dc519da632dc652b",
+          "visibility": "PUBLIC"
+        },
+        "target_path": "packages/ai-setup-doctor"
+      },
+      {
+        "disposition": "ABSORB",
+        "repository": "vigilanty0x/backup-verifier",
+        "source": {
+          "archived": false,
+          "default_branch": "main",
+          "head": "6b21b29accf7e9f5b9e8879800dd51fcb68b6c2f",
+          "tree": "6205bd0c847eb3f5f602444b4dd3ff43e91b1a18",
+          "visibility": "PUBLIC"
+        },
+        "target_path": "packages/backup-verifier"
+      },
+      {
+        "disposition": "ABSORB",
+        "repository": "vigilanty0x/codebase-onboarding-guide-generator",
+        "source": {
+          "archived": false,
+          "default_branch": "main",
+          "head": "0e4370c0720865725849320c648201dce6b8b13b",
+          "tree": "84fa5ca76ee9559764d745fc5f3aa0412f35a7b5",
+          "visibility": "PUBLIC"
+        },
+        "target_path": "packages/devdocs/packages/codebase-onboarding-guide-generator"
+      },
+      {
+        "disposition": "ABSORB",
+        "repository": "vigilanty0x/config-drift-detector",
+        "source": {
+          "archived": false,
+          "default_branch": "main",
+          "head": "321991b314e55f357748130a663dfc24b57d33ca",
+          "tree": "57e40f74f3ac7fb833312efae6ab97c3768d9dac",
+          "visibility": "PUBLIC"
+        },
+        "target_path": "packages/config-drift-detector"
+      },
+      {
+        "disposition": "ABSORB",
+        "repository": "vigilanty0x/container-resource-profiler",
+        "source": {
+          "archived": false,
+          "default_branch": "main",
+          "head": "eaf9d4dbf71f75249e7556102c216cda6b737b47",
+          "tree": "ff5fd1bd0d5941dd1ae3eb9c74d50ef06a0034d5",
+          "visibility": "PUBLIC"
+        },
+        "target_path": "packages/container-resource-profiler"
+      },
+      {
+        "disposition": "ABSORB",
+        "repository": "vigilanty0x/dependency-drift-reporter",
+        "source": {
+          "archived": false,
+          "default_branch": "main",
+          "head": "5af035db71c6cbd0c3f168929714a6d49994526b",
+          "tree": "faa8ae9cebfcf95d1b18d578d20e43a2d3529d9d",
+          "visibility": "PUBLIC"
+        },
+        "target_path": "packages/dependency-drift-reporter"
+      },
+      {
+        "disposition": "ABSORB",
+        "repository": "vigilanty0x/devdocs",
+        "source": {
+          "archived": false,
+          "default_branch": "main",
+          "head": "56e714b5f5913c7700e57315be6d3db9195e608e",
+          "tree": "7c56075e4f6dd062bfea550836ecaef1144e6183",
+          "visibility": "PUBLIC"
+        },
+        "target_path": "packages/devdocs"
+      },
+      {
+        "disposition": "ABSORB",
+        "repository": "vigilanty0x/docker-stack-doctor",
+        "source": {
+          "archived": false,
+          "default_branch": "main",
+          "head": "460da37025f0d04a1a474da46b61ccd9454eea25",
+          "tree": "6059d02ba7f1028d78ff31e2dcd8d6dad1531d02",
+          "visibility": "PUBLIC"
+        },
+        "target_path": "packages/docker-stack-doctor"
+      },
+      {
+        "disposition": "ABSORB",
+        "repository": "vigilanty0x/document-factory",
+        "source": {
+          "archived": false,
+          "default_branch": "main",
+          "head": "fdb359020db487e8e6fad3dab47161317aa0ed2c",
+          "tree": "b038049bb9f9af54bb1b63c3950c278cc56f89b7",
+          "visibility": "PUBLIC"
+        },
+        "target_path": "packages/devdocs/packages/document-factory"
+      },
+      {
+        "disposition": "ABSORB",
+        "repository": "vigilanty0x/duplicate-finder",
+        "source": {
+          "archived": false,
+          "default_branch": "main",
+          "head": "6ca31cc0fd591237510e7ce7eccab8d77887651f",
+          "tree": "1e2a6cb3d5aa5a4ba1d5c5a39a689ddbd82048a3",
+          "visibility": "PUBLIC"
+        },
+        "target_path": "packages/duplicate-finder"
+      },
+      {
+        "disposition": "ABSORB",
+        "repository": "vigilanty0x/event-log-explorer",
+        "source": {
+          "archived": false,
+          "default_branch": "main",
+          "head": "15bad3899f559855533b9b935422171ea85c95bd",
+          "tree": "326f6e74a041c40c8c81d9b3d3e3c4cf4d27b2eb",
+          "visibility": "PUBLIC"
+        },
+        "target_path": "packages/devdocs/packages/event-log-explorer"
+      },
+      {
+        "disposition": "ABSORB",
+        "repository": "vigilanty0x/failure-postmortem-kit",
+        "source": {
+          "archived": false,
+          "default_branch": "main",
+          "head": "85b11f50bc4e683d8414be2ffe902a0c4183c4d9",
+          "tree": "4db1cc94bc75c0ce54e2b555215be19889e0da3b",
+          "visibility": "PUBLIC"
+        },
+        "target_path": "packages/devdocs/packages/failure-postmortem-kit"
+      },
+      {
+        "disposition": "ABSORB",
+        "repository": "vigilanty0x/healthcheck-hub",
+        "source": {
+          "archived": false,
+          "default_branch": "main",
+          "head": "c8f956210792a415b3b97f69cdd1edb108ca9608",
+          "tree": "948374a7d24cc41ec994fe302c5236cfdbd482e8",
+          "visibility": "PUBLIC"
+        },
+        "target_path": "packages/healthcheck-hub"
+      },
+      {
+        "disposition": "ABSORB",
+        "repository": "vigilanty0x/migration-verifier",
+        "source": {
+          "archived": false,
+          "default_branch": "main",
+          "head": "e0870516577d27ab3a301174b870d527faae90b0",
+          "tree": "bb99a3d7356d0326b6d83cb601f4147401f502e3",
+          "visibility": "PUBLIC"
+        },
+        "target_path": "packages/migration-verifier"
+      },
+      {
+        "disposition": "ABSORB",
+        "repository": "vigilanty0x/port-conflict-doctor",
+        "source": {
+          "archived": false,
+          "default_branch": "main",
+          "head": "fd4097d51d1b717a88f77047008de7de3574ec67",
+          "tree": "c41e2818794f45a92a1ba3743c3bee7d0b4a4e62",
+          "visibility": "PUBLIC"
+        },
+        "target_path": "packages/port-conflict-doctor"
+      },
+      {
+        "disposition": "ABSORB",
+        "repository": "vigilanty0x/repo-dependency-graph",
+        "source": {
+          "archived": false,
+          "default_branch": "main",
+          "head": "f7d190a4b2997a34ecab5d00ca06caf896f515e7",
+          "tree": "71c3e7dd5276433c63e67a863b5a454035979c75",
+          "visibility": "PUBLIC"
+        },
+        "target_path": "packages/repo-dependency-graph"
+      },
+      {
+        "disposition": "KEEP",
+        "repository": "vigilanty0x/repo-doctor",
+        "source": {
+          "archived": false,
+          "default_branch": "main",
+          "head": "a8dfdd4dfb0c2bc229b19f9e5519f7951552ff23",
+          "tree": "d1cd218f6ecfb5463a26329cc00be507db6fb1b0",
+          "visibility": "PUBLIC"
+        },
+        "target_path": "."
+      },
+      {
+        "disposition": "ABSORB",
+        "repository": "vigilanty0x/repo-doctor-ai",
+        "source": {
+          "archived": false,
+          "default_branch": "main",
+          "head": "35319da5c8397a111deee37edd5a1b9db09518cd",
+          "tree": "871cdd57fa1b8fddded786e8d350ad7bf3e983e8",
+          "visibility": "PUBLIC"
+        },
+        "target_path": "."
+      },
+      {
+        "disposition": "ABSORB",
+        "repository": "vigilanty0x/runbook-builder",
+        "source": {
+          "archived": false,
+          "default_branch": "main",
+          "head": "fdd60d70aab096a468773c149319453fbebe068b",
+          "tree": "fb3e12059ba9d324efa4392810fb45a666b3edae",
+          "visibility": "PUBLIC"
+        },
+        "target_path": "packages/devdocs/packages/runbook-builder"
+      },
+      {
+        "disposition": "ABSORB",
+        "repository": "vigilanty0x/service-doctor",
+        "source": {
+          "archived": false,
+          "default_branch": "main",
+          "head": "05be8b5b3d4e74267543bbcd156412212157d982",
+          "tree": "6360b7dd8092ddb2cef11fc442297b0d5f4fcd69",
+          "visibility": "PUBLIC"
+        },
+        "target_path": "packages/service-doctor"
+      },
+      {
+        "disposition": "ABSORB",
+        "repository": "vigilanty0x/sqlite-health-doctor",
+        "source": {
+          "archived": false,
+          "default_branch": "main",
+          "head": "8b2548056b05cd592187f7fa23afd67b05bf3446",
+          "tree": "6cbdf0e6ca581a83b4f0461485865b324bb3703c",
+          "visibility": "PUBLIC"
+        },
+        "target_path": "packages/sqlite-health-doctor"
+      },
+      {
+        "disposition": "ABSORB",
+        "repository": "vigilanty0x/sqlite-query-plan-visualizer",
+        "source": {
+          "archived": false,
+          "default_branch": "main",
+          "head": "e6e0b4087e43eeee90419c1b569fbf1b310f201d",
+          "tree": "cfeda176aef5f2f8438471bb2f7d5f88c5d40c50",
+          "visibility": "PUBLIC"
+        },
+        "target_path": "packages/sqlite-query-plan-visualizer"
+      },
+      {
+        "disposition": "ABSORB",
+        "repository": "vigilanty0x/state-machine-visualizer",
+        "source": {
+          "archived": false,
+          "default_branch": "main",
+          "head": "f47cc7bf1b18b68a343715478820310a4b35ea23",
+          "tree": "7d8f0601e7f091d14933eb66b57a82e3bda536b6",
+          "visibility": "PUBLIC"
+        },
+        "target_path": "packages/devdocs/packages/state-machine-visualizer"
+      },
+      {
+        "disposition": "ABSORB",
+        "repository": "vigilanty0x/system-map-generator",
+        "source": {
+          "archived": false,
+          "default_branch": "main",
+          "head": "70bec119a83595e1b4c2b2566b5f0349121356a4",
+          "tree": "64f36405b736a4d4667efe3a2464d0b456257e43",
+          "visibility": "PUBLIC"
+        },
+        "target_path": "packages/devdocs/packages/system-map-generator"
+      }
+    ]
+  }
+}

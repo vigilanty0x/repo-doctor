@@ -23,6 +23,8 @@ jobs:
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
         with:
           python-version: ${{ matrix.python-version }}
+      - name: Validate monorepo manifest
+        run: python scripts/check_monorepo.py
       - name: Install
         run: python -m pip install setuptools==80.9.0
       - name: Source verification
@@ -71,6 +73,116 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Install pinned build tooling
         run: python -m pip install --disable-pip-version-check "build==1.2.2.post1" "setuptools==80.9.0" "wheel==0.45.1"
+      - name: Build package wheel
+        run: python -m build --no-isolation --wheel
+      - name: Install package wheel
+        run: python -m pip install --disable-pip-version-check --force-reinstall --no-deps dist/*.whl
+      - name: Run package static checks
+        run: python scripts/check.py
+      - name: Run package tests
+        run: python -m unittest discover -s tests -v
+      - name: Compile package sources and tests
+        run: python -m compileall -q src tests
+      - name: Import installed artifact outside checkout
+        working-directory: ${{ runner.temp }}
+        env:
+          PACKAGE_MODULE: ${{ matrix.package }}
+        run: python -c "import importlib, os; importlib.import_module(os.environ['PACKAGE_MODULE'].replace('-', '_'))"
+
+  devdocs-integration:
+    name: DevDocs integration / Python 3.12
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: packages/devdocs
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: "3.12"
+      - name: Validate DevDocs integration contract
+        run: python scripts/check_devdocs_integration.py
+      - name: Run integration counter-proofs
+        run: python -m unittest discover -s tests -v
+      - name: Compile integration checks
+        run: python -m compileall -q scripts tests
+
+  ai-assistance-manifest:
+    name: AI assistance manifest / Python 3.12
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: packages/ai-assistance-manifest
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: "3.12"
+      - name: Install pinned build toolchain
+        run: python -m pip install --disable-pip-version-check --upgrade -r requirements-build.txt
+      - name: Build wheel
+        run: python -m pip wheel . --no-deps --no-build-isolation --wheel-dir dist
+      - name: Install built wheel
+        run: python -c "import glob, subprocess, sys; wheels=glob.glob('dist/*.whl'); assert len(wheels) == 1, wheels; subprocess.check_call([sys.executable, '-m', 'pip', 'install', '--disable-pip-version-check', '--no-deps', '--force-reinstall', wheels[0]])"
+      - name: Run unit tests against installed candidate
+        run: python -m unittest discover -s tests -v
+      - name: Validate AI assistance manifest
+        run: aim validate AI_ASSISTANCE.json --check-files --root .
+      - name: Verify counter-proofs and release policy
+        run: |
+          python scripts/verify_counterproof.py
+          python scripts/check_release_policy.py
+      - name: Compile package, tests, and scripts
+        run: python -m compileall -q src tests scripts
+
+  imported-leaf-package-tests:
+    name: ${{ matrix.package }} / imported suite / Python 3.12
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - suite: devdocs
+            package: codebase-onboarding-guide-generator
+          - suite: devdocs
+            package: document-factory
+          - suite: devdocs
+            package: event-log-explorer
+          - suite: devdocs
+            package: failure-postmortem-kit
+          - suite: devdocs
+            package: runbook-builder
+          - suite: devdocs
+            package: state-machine-visualizer
+          - suite: devdocs
+            package: system-map-generator
+          - suite: ai-assistance-manifest
+            package: ai-project-provenance-badge
+    defaults:
+      run:
+        working-directory: packages/${{ matrix.suite }}/packages/${{ matrix.package }}
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: "3.12"
+      - name: Install pinned build tooling
+        run: python -m pip install --disable-pip-version-check "build==1.2.2.post1" "setuptools==83.0.0" "wheel==0.45.1"
       - name: Build package wheel
         run: python -m build --no-isolation --wheel
       - name: Install package wheel
