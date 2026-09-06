@@ -51,6 +51,13 @@ def _parser() -> argparse.ArgumentParser:
     scan.add_argument("--journal")
     scan.add_argument("--run-id")
 
+    run = sub.add_parser("run", help="assess a repository and produce one complete evidence bundle")
+    run.add_argument("path")
+    run.add_argument("--output", required=True, help="new directory outside the target repository")
+    run.add_argument("--config")
+    run.add_argument("--baseline-report")
+    run.add_argument("--fail-on", choices=("none", "low", "medium", "high", "critical"), default="high")
+
     baseline = sub.add_parser("baseline", help="create a reviewed suppression baseline from a JSON report")
     baseline.add_argument("report")
     baseline.add_argument("--output", default="repo-doctor-baseline.json")
@@ -197,6 +204,15 @@ def main(
             else:
                 print(f"journal is valid ({len(events)} events)")
             return 0
+
+        if args.command == "run":
+            from .workflow import run_workflow
+            if config is not None and args.config:
+                raise ConfigError("cannot combine an injected config with --config")
+            result = run_workflow(args.path, args.output, config=config or load_config(args.config),
+                                  baseline=args.baseline_report, fail_on=args.fail_on)
+            print(_json(result), end="")
+            return 2 if result['state'] != 'DONE' else (0 if result['gate_passed'] else 1)
 
         if args.command == "baseline":
             output = Path(args.output)

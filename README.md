@@ -41,6 +41,20 @@ Repo Doctor has no runtime dependencies.
 
 ## Quick start
 
+Run the integrated assessment with one command:
+
+```bash
+repo-doctor run ./repository --output ./assessment --fail-on high
+```
+
+This produces an audit, an evidence-linked remediation plan, a dependency
+inventory and a final result binding the three physical files by SHA-256.
+Add `--baseline-report previous/report.json` to include the regression gate.
+The output directory must be new and outside the scanned repository. No target
+code is executed. A completed assessment can have a red quality gate; incomplete
+or failed phases cannot pass. Phases inspect a live directory; use an isolated
+checkout when an immutable source snapshot is required.
+
 Audit the current repository:
 
 ```bash
@@ -80,6 +94,7 @@ The example is intentionally imperfect. It demonstrates findings without contain
 | Tests | recognized test directories and language-specific filenames |
 | CI | explicit permissions, write grants, immutable action SHAs, risky triggers, event-to-shell interpolation |
 | Dependencies | Python requirements and `pyproject.toml`, npm, Go, Rust, Docker base-image policy, lock/checksum presence |
+| npm lock drift | Exact direct npm declarations versus sibling package-lock v2/v3 recorded versions; unknown scopes remain explicit, installed state is not observed |
 | Secrets | private keys, GitHub/AWS shapes, credential assignments, high-entropy credential-named literals; values always redacted |
 | Repository policy | generated artifacts, vendored source, oversized review surfaces |
 | Ownership | CODEOWNERS, maintainers/governance documentation |
@@ -96,6 +111,18 @@ repo-doctor explain CI_ACTION_NOT_FULL_SHA
 ```
 
 These rules provide deterministic signals, not a substitute for human review, runtime testing, vulnerability feeds, license counsel, or a malware sandbox.
+
+Try the synthetic npm drift example through the existing workflow:
+
+```bash
+repo-doctor run examples/lock-drift --config examples/dependencies-only.json --output ./lock-assessment --fail-on high
+repo-doctor explain DEPENDENCY_LOCK_DRIFT
+```
+
+The example intentionally returns `1`: an exact `1.0.0` declaration has a `2.0.0`
+lock entry. The scan and remediation report identify that difference without
+running npm or inspecting installed packages. See [npm lock comparison](docs/NPM-LOCK-COMPARISON.md)
+for supported inputs, provenance and unknown cases.
 
 ## Score and maturity
 
@@ -273,3 +300,12 @@ repo-doctor sbom . --output /tmp/repo-doctor.cdx.json
 ```
 
 Contributions are welcome under Apache-2.0. Tests and issue reproductions must use synthetic data only.
+## Public environment examples
+
+The existing `secrets` category also checks `.env.example` placeholders and
+provider-shaped values without emitting them. An optional sibling
+`env-keys.json` declares expected names for exact key parity; it never proves
+a loaded environment. Missing parity remains visible. See
+[the contract and safe scan configuration](docs/ENV-EXAMPLE-COMPARISON.md).
+The legacy `.env.keys.json` name remains accepted. If both are observed, their
+declared key sets must match; an invalid or divergent alias is refused.

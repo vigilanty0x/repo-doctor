@@ -14,6 +14,8 @@ import tokenize
 from typing import Callable, Iterable
 
 from .models import Finding
+from .lock_drift import HELP as LOCK_HELP, audit_lock_drift
+from .env_examples import HELP as ENV_HELP, audit_env_examples
 
 
 @dataclass(frozen=True)
@@ -63,6 +65,8 @@ RULE_HELP: dict[str, str] = {
     "RELEASE_CHANGELOG_MISSING": "No changelog or release-notes file was found.",
     "RELEASE_VERSION_MISMATCH": "Declared project versions disagree across manifests.",
 }
+RULE_HELP.update(LOCK_HELP)
+RULE_HELP.update(ENV_HELP)
 
 
 def _finding(
@@ -864,7 +868,14 @@ def build_default_registry():
         "documentation": "Architecture and operational documentation",
         "release": "Release notes and cross-manifest version consistency",
     }
-    return RuleRegistry(
+    registry = RuleRegistry(
         RulePlugin(f"builtin.{category}", category, descriptions[category], auditor)
         for category, auditor in AUDITORS.items()
     )
+    registry.register(RulePlugin('builtin.dependency-lock-drift','dependencies',
+                                 'Exact direct npm declarations versus lock-recorded versions; installed state is not observed',
+                                 audit_lock_drift))
+    registry.register(RulePlugin('builtin.env-example', 'secrets',
+        'Public example placeholder policy and optional declared key parity; loaded environment is not observed',
+        audit_env_examples))
+    return registry

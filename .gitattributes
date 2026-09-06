@@ -1,0 +1,3 @@
+# Historical parity oracles are SHA-256 pinned as exact LF bytes.
+tests/source_oracles/env_example_guard_core.py text eol=lf
+tests/source_oracles/dependency_drift_reporter_core.py text eol=lf
